@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>关系管理</title>
+
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-fileupload.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .list-group a{
+            background-color: #393d49;
+            border: 0px;
+            color: white;
+
+        }
+        .list-group a:hover{
+            background-color: #12967c;
+            border: 0px;
+            color: white;
+
+        }
+
+    </style>
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="">
+            <div class="layui-logo">驾校预约管理系统</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+
+        <div class="layui-nav">
+            <!-- Single button -->
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img id="img" src="../img/mmexport1508332669479.jpg" class="layui-nav-img"><span id="usernameheader">xs-shuai </span></a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="userInfo.html">个人中心</a>
+                        </dd>
+                        <dd>
+                            <a href="/login/logout">注销登录</a>
+                        </dd>
+
+                    </dl>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <div class="list-group">
+                <a href="index.html" class="list-group-item ">首页</a>
+                <a href="studentManger.html" class="list-group-item">学员管理</a>
+                <a href="teacherManger.html" class="list-group-item">教练管理</a>
+                <a href="cartManger.html" class="list-group-item">车辆管理</a>
+                <a href="relationshipManager.html" class="list-group-item active">关系管理</a>
+                <a href="repairManger.html" class="list-group-item">车辆维修模块</a>
+                <a href="userInfo.html" class="list-group-item">个人中心</a>
+            </div>
+        </div>
+    </div>
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <p class="h3">关系管理</p>
+        <div class="col-md-12">
+            <div class="col-md-3">
+                <button type="button" class="btn btn-info" id="addbutton" data-toggle="modal" data-target="#addmodal"
+                        aria-label="Left Align">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true">关系管理</span>
+                </button>
+            </div>
+            <div class="col-md-8 ">
+                <div class="form-group col-md-3 form-inline">
+                    <label>驾照类型</label>
+                    <select class="form-control" id="type">
+                        <option value="0" selected>当前</option>
+                        <option value="1">历史</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" style="margin-top: 15px">
+            <form class="form-inline">
+                <div class="form-group col-md-3">
+                    <label class="sr-only bg-success">教练姓名</label>
+                    <div class="col-md-10 ">
+                        <input type="text" class="form-control" placeholder="教练姓名" id="teacherName">
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="sr-only bg-success">车牌</label>
+                    <div class="col-md-10 ">
+                        <input type="text" class="form-control" placeholder="车牌号" id="carNumber">
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>驾照类型</label>
+                    <select class="form-control" id="driverTitle">
+                        <option value="">不限</option>
+
+                    </select>
+                </div>
+
+            </form>
+            <input type="button" id="searchTitle" class="btn  btn-success" value="查询">
+        </div>
+        <div class="col-md-12" style="margin-top: 5px">
+            <div class="">
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>教练姓名</th>
+                        <th>车辆车牌</th>
+                        <th>驾照类型</th>
+                        <th>关联时间</th>
+                        <th>结束时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table">
+
+                    </tbody>
+
+
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="layui-footer">
+        © 2022 <a href="#">singulee.com</a>
+    </div>
+</div>
+<!--模态框-->
+<div class="modal" id="addmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    关系管理
+                </h4>
+            </div>
+            <div class="modal-body">
+                <!--页面设计-->
+                <div class="form-horizontal">
+                    <div class="col-md-5">
+                        <label class="col-sm-3 control-label">
+                            姓名</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="teaName" placeholder="姓名">
+                        </div>
+                    </div>
+                    <div class="col-md-5 ">
+                        <label class="col-sm-4 control-label">
+                            驾驶证类型</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="driverClass">
+                                <option value="">不限</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="button" id="search" class="btn btn-info" value="查找">
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-12 row" style="margin-top: 5px">
+                            <div class="col-md-5 "><strong>教练列表</strong></div>
+                            <div class="col-md-5 col-md-offset-1"><strong>车辆列表</strong></div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-md-5 row pre-scrollable">
+                                <ul class="list-group" id="teacherList">
+                                    <li class="list-group-item"><input type="radio" name="name"> 李帅</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-5 row pre-scrollable col-md-offset-1">
+                                <ul class="list-group" id="carList">
+                                    <li class="list-group-item"><input type="radio" name="carnumber">111</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="margin-top: 10px">
+                            <button type="button" id="addrelationship" class="btn btn-success col-md-offset-4 col-md-4">提交</button>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-fileupload.js"></script>
+<script src="../layui/layui.all.js"></script>
+<script src="../js/myjs.js"></script>
+<script>
+    $(function () {
+        shouimg();
+        getDriverClass();
+        getTeacher();
+        getCar();
+        addrelationship();
+        search();
+        getinfo();
+        $("#searchTitle").click(function () {
+            getinfo();
+        })
+        function getinfo() {
+            //判断显示的是历史还是当前数据
+            var json={carNumber:$("#carNumber").val().trim(),teacherName:$("#teacherName").val().trim(),
+                driverclassId:$("#driverTitle").val().trim()}
+            console.log(json)
+            //获取表单框
+            if ($("#type").val()==0){
+                // 查看当前关系
+                getnowrelationship(json);
+            }
+            else{
+                //历史
+                getHistory(json)
+            }
+
+        }
+    })
+
+    
+    function getnowrelationship(json) {
+        $.ajax({
+            url: "/relation/getNow",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data:JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    addtr(response.data)
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+
+    function addtr(data) {
+        $("#table").empty();
+        var tr;
+        for (var i=0; i<data.length;i++){
+            tr=$("<tr><td>"+(i+1)+"</td><td>"+data[i].teacher.teaname+"</td>" +
+                "<td>"+data[i].cart.carnumber+"</td><td>"+driver(data[i].cart.cardriverclass)+"</td><td>"+dateString(data[i].starttime)+"</td>" +
+                "<td>"+dateString(data[i].endtime)+"</td><td></td></tr>")
+            $("#table").append(tr);
+        }
+
+
+    }
+    function driver(driver) {
+        var option = $("#driverTitle option")
+        for (var i = 0; i < option.length; i++) {
+            if (option.get(i).value==driver) {
+                return option.get(i).text;
+            }
+        }
+    }
+
+
+
+    function getHistory(json) {
+        $.ajax({
+            url: "/relation/getHistory",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data:JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    addtr(response.data)
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+    
+    
+
+    function search() {
+        $("#search").click(function () {
+            getTeacher();
+            getCar();
+        })
+    }
+ //添加关系
+    function addrelationship() {
+        $("#addrelationship").click(function () {
+            var teacherid=$("input[name='teachaerId']:checked").val();
+            var carid=$("input[name='cartId']:checked").val();
+            console.log(teacherid+ ">>>"+carid)
+            if(typeof(carid)=='undefined'||typeof (teacherid)=='undefined'){
+                layer.msg('请填写完整信息', {
+                    time: 2000,
+                    btn: ['好的']
+                })
+                return;
+            }
+            var json={teacherid:teacherid,cartid:carid}
+            $.ajax({
+                url: "/relation/addrelation",
+                type: "post",
+                cache: false,
+                contentType: "application/json",
+                datatype: "json",
+                data:JSON.stringify(json),
+                success: function (response) {
+                    if (response.code == 200) {
+                        layer.msg(response.msg, {
+                            time: 1000
+                        })
+                    }
+                    else{
+                        layer.msg(response.msg, {
+                            time: 1000
+                        })
+                    }
+                    getTeacher();
+                    getCar();
+
+                }
+                ,
+                error: function (response) {
+                    console.log("出错返回: " + response);
+                    console.log("出错数据: " + JSON.stringify(response));
+                }
+            });
+
+        })
+    }
+
+//查询空闲车辆
+    function getTeacher() {
+        var json={driverclassId:$("#driverClass").val().trim(),teacherName:$("#teacherName").val().trim()}
+        $.ajax({
+            url: "/relation/getEmptyTeacher",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data:JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    addteacherLi(response.data);
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+//添加li
+    function addteacherLi(data) {
+        $("#teacherList").empty();
+        var li;
+        for(var i=0;i<data.length;i++){
+            li=$("<li class='list-group-item'><div class='radio'>" +
+                " <label><input type='radio' value='"+data[i].teaid+"' name='teachaerId'> "+data[i].teaname+"</label></div></li>");
+            $("#teacherList").append(li);
+        }
+    }
+    //查询空闲车
+    function getCar() {
+        var json={driverclassId:$("#driverClass").val().trim(),teacherName:$("#teacherName").val().trim()}
+        console.log(json)
+        $.ajax({
+            url: "/relation/getEmptyCar",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data:JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    console.log(response.data)
+                    addCarLi(response.data);
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+    //添加li
+    function addCarLi(data) {
+        $("#carList").empty();
+        var li;
+        for (var i = 0; i < data.length; i++) {
+            li = $("<li class='list-group-item'><div class='radio'>" +
+                "  <label><input type='radio' value='" + data[i].carid + "' name='cartId'> " + data[i].carnumber + "</label></div></li>");
+            $("#carList").append(li);
+        }
+    }
+
+    //获得驾照类型
+    function getDriverClass() {
+        $.ajax({
+            url: "/driver/getDriverList",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            success: function (response) {
+                if (response.code == 200) {
+                    addDriverClassforSelect(response.data);
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+    }
+
+    //驾照类型添加下拉框
+    function addDriverClassforSelect(data) {
+        $("#driverClass").empty();
+        $("#driverTitle").empty();
+        var option;
+        var optiontile;
+        option = $("<option value=''>不限</option>")
+        optiontile = $("<option value=''>不限</option>")
+        $("#driverClass").append(option);
+        $("#driverTitle").append(optiontile);
+        for (var i = 0; i < data.length; i++) {
+            option = $("<option value='" + data[i].driverid + "'>" + data[i].driverdescription + "</option>")
+            optiontile = $("<option value='" + data[i].driverid + "'>" + data[i].driverdescription + "</option>")
+            $("#driverClass").append(option);
+            $("#driverTitle").append(optiontile);
+        }
+    }
+
+</script>
+</html>

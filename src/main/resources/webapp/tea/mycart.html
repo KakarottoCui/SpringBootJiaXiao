@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>课程管理</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-fileupload.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .list-group a {
+            background-color: #393d49;
+            border: 0px;
+            color: white;
+
+        }
+
+        .list-group a:hover {
+            background-color: #12967c;
+            border: 0px;
+            color: white;
+
+        }
+
+    </style>
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="">
+            <div class="layui-logo">驾校预约管理系统</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img id="img" src="../img/mmexport1508332669479.jpg" class="layui-nav-img"><span
+                        id="usernameheader">xs-shuai </span></a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="userInfo.html">个人中心</a>
+                    </dd>
+                    <dd>
+                        <a href="/login/logout">注销登录</a>
+                    </dd>
+
+                </dl>
+            </li>
+
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <div class="list-group">
+                <a href="index.html" class="list-group-item ">首页</a>
+                <a href="courseManager.html" class="list-group-item">我的课程</a>
+                <a href="mystudent.html" class="list-group-item">我的学员</a>
+                <a href="mycart.html" class="list-group-item active">车辆中心</a>
+                <a href="userInfo.html" class="list-group-item">个人中心</a>
+            </div>
+        </div>
+    </div>
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <p class="h3">用车记录</p>
+        <div class="col-md-12" style="margin-top: 15px">
+            <div class="form-group col-md-3 form-inline">
+                <label>当前用车:</label>
+                <div id="localCart">
+                </div>
+            </div>
+            <input type="button" id="repair" class="btn  btn-success" data-toggle='modal' data-target='#addmodal'
+                   value="维修">
+        </div>
+        <div class="col-md-12" style="margin-top: 15px">
+            <div class="form-group col-md-3 form-inline">
+                <label>时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="date">
+                </div>
+            </div>
+            <input type="button" id="searchTitle" class="btn  btn-success" value="查询">
+        </div>
+        <div class="col-md-12" style="margin-top: 5px">
+            <div class="">
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>车牌号</th>
+                        <th>报修人</th>
+                        <th>电话</th>
+                        <th>状态</th>
+                        <th>报修时间</th>
+                        <th>返回时间</th>
+                        <th>原因</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table">
+
+                    </tbody>
+                </table>
+                <div>
+                    <ul class="pager">
+                        <li><a href="#" id="last">上一页</a></li>
+                        <li id="pageInfo"></li>
+                        <li><a href="#" id="next">下一页</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="layui-footer">
+        © 2022 <a href="#">singulee.com</a>
+    </div>
+    <!--模态框-->
+    <div class="modal" id="addmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+         data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        学员情况
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <!--页面设计-->
+                    <div class="col-md-12">
+                        <div class="col-md-12 row" style="margin-top: 5px">
+                            <div class="col-md-5 "><strong>填写信息</strong></div>
+                            <div class="col-md-5 col-md-offset-1"><strong>选择备用车辆</strong></div>
+                        </div>
+                        <div class="col-md-12" style="margin-top: 10px">
+                            <div class="col-md-5 ">
+                                <div class="col-md-12 row ">
+                                    <div class="col-md-12">
+                                        <input id="carId" type="hidden">
+                                        <label class="col-sm-6 layui-form-label">
+                                            当前车辆</label>
+                                        <div class="col-sm-6" id="localCartModal">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <label class="layui-form-label">原因</label>
+                                        <div class=" col-sm-12">
+                                            <textarea placeholder="维修原因" class="layui-textarea" id="cause"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="col-md-12 row pre-scrollable " style="height: 340px;">
+                                    <ul class="list-group" id="detailList">
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save" type="button" class="btn btn-primary">
+                        提交
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        关闭
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-fileupload.js"></script>
+<script src="../layui/layui.all.js"></script>
+<script src="../js/myjs.js"></script>
+<script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
+<script>
+    var page = 1;
+    $(function () {
+        shouimg();
+        getloacalCart();
+        getHistory();
+        getnull();
+        $("#save").click(addrepair);
+        pageSearch();
+        $('#repair').on('click', function () {
+            var newCarNumber = $('input[name="cartId"]').val();
+            if (!newCarNumber) {
+                layer.msg('请联系管理员增加备用车辆！', {
+                    time: 5000,
+                    btn: ['好的']
+                })
+            }
+        })
+        $('#searchTitle').on('click', function () {
+            getHistory();
+        })
+    })
+
+    //报修
+    function addrepair() {
+        var newCarNumber = $('input[name="cartId"]:checked').val();
+        console.log(newCarNumber);
+        if (typeof (newCarNumber) == 'undefined') {
+            layer.msg('维修车辆需选择新的备用车辆', {
+                time: 5000,
+                btn: ['好的']
+            })
+            return;
+        }
+        var cause = $("#cause").val().trim();
+        if (cause.length == 0) {
+            layer.msg('没有填写更换原因,请重试', {
+                time: 1000,
+                btn: ['好的']
+            })
+            return;
+        }
+
+        var json = {carId: $("#carId").val(), cause: cause, newCarId: newCarNumber};
+        $.ajax({
+            url: "/repair/addrepair",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    layer.msg('报修成功', {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                    $("#addmodal").modal('hide');
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+    }
+
+    // 获得当前车辆
+    function getloacalCart() {
+        $.ajax({
+            url: "/repair/getlocalCart",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            // data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    $("#localCart").text(response.data[0].carNumber);
+                    $("#localCartModal").text(response.data[0].carNumber);
+                    $("#carId").val(response.data[0].carId);
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+
+    // 关联车记录 分页
+    function getHistory() {
+        var json = {date: $("#date").val(), page: page}
+        $.ajax({
+            url: "/repair/getHistory",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                showtr(response)
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+
+
+    function showtr(respone) {
+        $("#table").empty();
+        var tr;
+        for (var i = 0; i < respone.data.length; i++) {
+            tr = $("<tr><td>" + (i + 1) + "</td><td>" + respone.data[i].carNumber + "</td><td>" + respone.data[i].teaName + "</td>" +
+                "<td>" + respone.data[i].teaPhone + "</td><td>" + respone.data[i].extend1 + "</td><td>" + datetimeStr(respone.data[i].repairTime) + "</td>" +
+                "<td>" + datetimeStr(respone.data[i].comebackTime) + "</td><td>" + respone.data[i].cause + "</td>" +
+                "</tr>");
+
+            $("#table").append(tr);
+        }
+        if (page == 1) {
+            $("#last").hide();
+        } else {
+            $("#last").show();
+        }
+        if (page == respone.pageCount) {
+            $("#next").hide();
+        } else {
+            $("#next").show();
+        }
+        $("#pageInfo").text("当前" + page + "页,共" + respone.pageCount + "页,共" + respone.count + "条数据")
+    }
+
+
+    //获得空闲车辆
+    function getnull() {
+        $.ajax({
+            url: "/repair/getNullCart",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            // data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    $("#detailList").empty();
+                    var li;
+                    for (var i = 0; i < response.data.length; i++) {
+                        li = $("<li><label><input type='radio' name='cartId' value='" + response.data[i].carid + "'>" + response.data[i].carnumber + "</li>")
+                        $("#detailList").append(li);
+                    }
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+
+    }
+
+
+    //分页
+    function pageSearch() {
+        $("#last").click(function () {
+            page = page - 1;
+            getHistory()
+        });
+        $("#next").click(function () {
+            page = page + 1;
+            getHistory()
+        });
+
+    }
+
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#date',
+            val: new Date(new Date().getTime())
+        });
+    })
+
+</script>
+</body>
+
+</html>

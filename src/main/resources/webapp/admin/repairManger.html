@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>学员管理</title>
+
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-fileupload.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .list-group a {
+            background-color: #393d49;
+            border: 0px;
+            color: white;
+
+        }
+
+        .list-group a:hover {
+            background-color: #12967c;
+            border: 0px;
+            color: white;
+
+        }
+
+    </style>
+
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="">
+            <div class="layui-logo">驾校预约管理系统</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+
+        <div class="layui-nav">
+            <!-- Single button -->
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img id="img" src="../img/mmexport1508332669479.jpg" class="layui-nav-img"><span id="usernameheader">xs-shuai </span></a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="userInfo.html">个人中心</a>
+                        </dd>
+                        <dd>
+                            <a href="/login/logout">注销登录</a>
+                        </dd>
+
+                    </dl>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <div class="list-group">
+                <a href="index.html" class="list-group-item ">首页</a>
+                <a href="studentManger.html" class="list-group-item">学员管理</a>
+                <a href="teacherManger.html" class="list-group-item">教练管理</a>
+                <a href="cartManger.html" class="list-group-item ">车辆管理</a>
+                <a href="relationshipManager.html" class="list-group-item">关系管理</a>
+                <a href="repairManger.html" class="list-group-item active">车辆维修模块</a>
+                <a href="userInfo.html" class="list-group-item">个人中心</a>
+            </div>
+        </div>
+    </div>
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <p class="h3">维修管理</p>
+        <div class="col-md-12" style="margin-top: 15px">
+            <div class="form-group col-md-3 form-inline">
+                <label>订单状态</label>
+                <select class="form-control" id="staute">
+                    <option value="维修中" selected>维修中</option>
+                    <option value="已完成">已完成</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3 form-inline">
+                <label>时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="date" placeholder="yyyy-MM-dd">
+                </div>
+            </div>
+            <div class="form-group col-md-3 form-inline">
+                <label>车牌</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="cartNumber" placeholder="车牌">
+                </div>
+            </div>
+            <div class="form-group col-md-3 form-inline">
+                <label>教练姓名</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="teacherName" placeholder="教练姓名">
+                </div>
+            </div>
+
+            <button type="button" id="search" class="btn  btn-success">查询</button>
+
+        </div>
+        <div class="col-md-12" style="margin-top: 5px">
+            <div class="">
+
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>车牌号</th>
+                        <th>报修人</th>
+                        <th>电话</th>
+                        <th>状态</th>
+                        <th>报修时间</th>
+                        <th>返回时间</th>
+                        <th>原因</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--分页-->
+        <div class="col-md-12">
+            <div>
+                <ul class="pager">
+                    <li><a href="#" id="last">上一页</a></li>
+                    <li id="pageInfo"></li>
+                    <li><a href="#" id="next">下一页</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <div class="layui-footer">
+        © 2022 <a href="#">singulee.com</a>
+    </div>
+</div>
+<!--模态框-->
+</body>
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-fileupload.js"></script>
+<script src="../js/myjs.js"></script>
+<script src="../layui/layui.js"></script>
+<script src="../layui/layui.all.js"></script>
+<script>
+    var page=1;
+    $(function (){
+        shouimg();
+        getlist();
+        $("#search").click(getlist);
+        pageSearch();
+    })
+
+    function getlist(){
+        var json={carNumber:$("#carNumber").val(),
+            date:$("#date").val(),
+            carNumber:$("#cartNumber").val(),
+            teaName:$("#teacherName").val(),
+            staute:$("#staute").val(),
+            page:page}
+        $.ajax({
+            url: "/repair/getHistory",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                showtr(response)
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+    //分页
+    function pageSearch() {
+        $("#last").click(function () {
+            page = page - 1;
+            getlist()
+        });
+        $("#next").click(function () {
+            page = page + 1;
+            getlist()
+        });
+
+    }
+
+    function showtr(respone){
+        $("#table").empty();
+        var tr;
+        for(var i=0;i<respone.data.length;i++){
+            if(respone.data[i].comebackTime==null){
+
+                tr=$("<tr><td>"+(i+1)+"</td><td>"+respone.data[i].carNumber+"</td><td>"+respone.data[i].teaName+"</td>" +
+                    "<td>"+respone.data[i].teaPhone+"</td><td>"+respone.data[i].extend1+"</td><td>"+datetimeStr(respone.data[i].repairTime)+"</td>" +
+                    "<td>"+datetimeStr(respone.data[i].comebackTime)+"</td><td>"+respone.data[i].cause+"</td>" +
+                    "<td><input type='text' hidden value='"+respone.data[i].repairId+"'><a onclick='finish(this)'>维修完成</a></td></tr>");
+            }
+            else {
+                tr=$("<tr><td>"+(i+1)+"</td><td>"+respone.data[i].carNumber+"</td><td>"+respone.data[i].teaName+"</td>" +
+                    "<td>"+respone.data[i].teaPhone+"</td><td>"+respone.data[i].extend1+"</td><td>"+datetimeStr(respone.data[i].repairTime)+"</td>" +
+                    "<td>"+datetimeStr(respone.data[i].comebackTime)+"</td><td>"+respone.data[i].cause+"</td>" +
+                    "<td></td></tr>");
+
+            }
+            $("#table").append(tr);
+        }
+        if(page==1){
+            $("#last").hide();
+        }
+        else{
+            $("#last").show();
+        }
+        if(page==respone.pageCount){
+            $("#next").hide();
+        }
+        else{
+            $("#next").show();
+        }
+        $("#pageInfo").text("当前"+page+"页,共"+respone.pageCount+"页,共"+respone.count+"条数据")
+    }
+
+    function finish(obj){
+        var repairId = $(obj).parent().find('input').eq(0).val();
+        var json={repairId:repairId};
+        $.ajax({
+            url: "/repair/repairFinish",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+               if (response.code==200){
+                getlist();
+               }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#date',
+            value:new Date(new Date().getTime())
+        });
+    })
+
+</script>
+</html>

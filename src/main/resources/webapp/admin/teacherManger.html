@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>教练管理</title>
+
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-fileupload.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .list-group a {
+            background-color: #393d49;
+            border: 0px;
+            color: white;
+
+        }
+
+        .list-group a:hover {
+            background-color: #12967c;
+            border: 0px;
+            color: white;
+
+        }
+
+    </style>
+
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="">
+            <div class="layui-logo">驾校预约管理系统</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+
+        <div class="layui-nav">
+            <!-- Single button -->
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img id="img" src="../img/mmexport1508332669479.jpg" class="layui-nav-img"><span
+                            id="usernameheader">xs-shuai </span></a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="userInfo.html">个人中心</a>
+                        </dd>
+                        <dd>
+                            <a href="/login/logout">注销登录</a>
+                        </dd>
+
+                    </dl>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <div class="list-group">
+                <a href="index.html" class="list-group-item ">首页</a>
+                <a href="studentManger.html" class="list-group-item">学员管理</a>
+                <a href="teacherManger.html" class="list-group-item active">教练管理</a>
+                <a href="cartManger.html" class="list-group-item ">车辆管理</a>
+                <a href="relationshipManager.html" class="list-group-item">关系管理</a>
+                <a href="repairManger.html" class="list-group-item">车辆维修模块</a>
+                <a href="userInfo.html" class="list-group-item">个人中心</a>
+            </div>
+        </div>
+    </div>
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <p class="h3">教练管理</p>
+        <div class="col-md-12">
+            <div>
+                <button type="button" class="btn btn-info" id="addbutton" data-toggle="modal" data-target="#addmodal"
+                        aria-label="Left Align">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"> 添加</span>
+                </button>
+
+            </div>
+        </div>
+        <div class="col-md-12" style="margin-top: 15px">
+            <form class="form-inline">
+                <div class="form-group col-md-4">
+                    <label class="sr-only bg-success">教练姓名</label>
+                    <div class="col-md-7 ">
+                        <input type="text" class="form-control" placeholder="教练姓名" id="teaNameTitle">
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label>驾照类型</label>
+                    <select class="form-control" id="driverTitle">
+                        <option value="">不限</option>
+
+                    </select>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <select class="form-control" placeholder="在职状态" id="teaStute">
+                        <option value="">不限</option>
+                        <option value="在职" selected>在职</option>
+                        <option value="离职">离职</option>
+                    </select>
+                </div>
+                <button type="button" id="search" class="btn  btn-success">查询</button>
+            </form>
+        </div>
+        <div class="col-md-12" style="margin-top: 5px">
+            <div class="">
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>姓名</th>
+                        <th>电话</th>
+                        <th>性别</th>
+                        <th>驾照类型</th>
+                        <th>入职日期</th>
+                        <th>离职时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table"></tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="layui-footer">
+        © 2022 <a href="#">singulee.com</a>
+    </div>
+</div>
+<!--模态框-->
+<div class="modal" id="addmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    添加
+                </h4>
+            </div>
+            <div class="modal-body">
+                <!--添加框-->
+                <div class="form-horizontal">
+                    <input type="hidden" class="form-control" id="teaId" value="">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            姓名</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="teaName" placeholder="姓名">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            电话</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="teaPhone" placeholder="电话">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            密码</label>
+                        <div class="col-sm-8">
+                            <input type="password" value="123456" class="form-control" id="teaPassword"
+                                   placeholder="密码">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            性别</label>
+                        <div class="col-sm-8">
+                            <div id="teasex">
+                                <input type="radio" name="sex" value="0" checked> 男
+                                <input type="radio" name="sex" value="1"> 女
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            驾照类型</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="driverClass">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" hidden id="teastaut">
+                        <label class="col-sm-3 control-label">
+                            教练状态</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="stuSta">
+                                <option value="0">在职</option>
+                                <option value="1">离职</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            入职时间</label>
+                        <div class="col-sm-8">
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="inDate" placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            生日</label>
+                        <div class="col-sm-8">
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="birthDate" placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            描述:</label>
+                        <div class="col-sm-8">
+                            <textarea id="teadesc" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            照片</label>
+                        <div class="col-sm-8">
+                            <!--照片上传预览-->
+                            <div class="col-sm-7">
+                                <form id="uploadForm" enctype="multipart/form-data">
+                                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                                        <img src="" id="showImg" style="width: 120px; height: 80px;"/>
+                                        <div class="fileupload-new thumbnail" style="width: 120px; height: 80px;">
+                                            <img src="" alt=""/></div>
+                                        <div class="fileupload-preview fileupload-exists thumbnail"
+                                             style="max-width: 120px; max-height: 80px; line-height: 20px;"></div>
+                                        <div>
+                                        <span class="btn btn-file btn-primary"><span
+                                                class="fileupload-new">选择图片</span>
+                                        <span id="sucessbtn1"
+                                              class="fileupload-exists">修改</span>
+                                        <input type="file" name="file"/>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+                <button id="submit" type="button" class="btn btn-primary">
+                    提交更改
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-fileupload.js"></script>
+<script src="../layui/layui.all.js"></script>
+<script src="../js/myjs.js"></script>
+<script src="../js/md5.js"></script>
+<script>
+    var path;
+    var allpassword;
+    $(function () {
+        shouimg();
+
+        getDriverClass();
+        getTeacher();
+        if ($("#teaId").val().trim().length == 0) {
+            $("#showImg").hide();
+        }
+
+        //添加下是初始化
+        $("#addbutton").click(function () {
+            $("#teaId").val("");
+            $("#teaName").val("");
+            $("#teaPhone").val("");
+            $("#teaPassword").val("123456");
+            $("#inDate").val("");
+            $("#birthDate").val("");
+            $("#teadesc").val("");
+            $("#showImg").hide();
+        })
+        //添加或修改
+        $("#submit").click(function () {
+            if ($("#teaId").val().trim().length == 0) {
+                //添加
+                fileupload();
+                insert(path);
+            } else {
+                // 修改
+                update();
+            }
+            getTeacher();
+            $("#addmodal").modal('hide');
+        })
+
+        $("#search").click(function () {
+            getTeacher()
+        })
+
+    })
+
+    //修改
+    function update() {
+        //必填项验证
+        var teaid = $("#teaId").val();
+        var teaname = $("#teaName").val().trim();
+        var teaphone = $("#teaPhone").val().trim();
+        var teapwd = $("#teaPassword").val().trim();
+        if (teapwd != allpassword) {
+            teapwd = hex_md5(teapwd);
+        }
+        var teasex = $("input[name='sex']:checked").val();
+        var teasta = $("#stuSta").val().trim();
+        var tearole = 0;
+        var teadriver = $("#driverClass").val().trim();
+        var teastartdate = $("#inDate").val().trim();
+        var teabirth = $("#birthDate").val().trim();
+        var teadescript = $("#teadesc").val().trim();
+        var src = $("#showImg").attr('src');
+        // 没有修改
+        path = "";
+        fileupload()
+        if (path.length == 0) path = src.substr(src.lastIndexOf("/") + 1);
+        var teaimg = path;
+        console.log(path);
+        if (teaname.length == 0 || teaphone.length == 0 || teapwd == 0 || teastartdate == 0) {
+            layer.msg('请填写完整信息', {
+                time: 1000,
+                btn: ['好的']
+            })
+            return;
+        }
+        var json =
+            {
+                teaid: teaid,
+                teaname: teaname,
+                teaphone: teaphone,
+                teapwd: teapwd,
+                teasex: teasex,
+                teasta: teasta,
+                tearole: tearole,
+                teadriver: teadriver,
+                teastartdate: teastartdate,
+                teabirth: teabirth,
+                teadescript: teadescript,
+                teaimg: teaimg
+            }
+
+        $.ajax({
+            url: "/teacher/updateTeacher",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                } else {
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+                allpassword = "";
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+
+    }
+
+    //添加
+    function insert() {
+        //必填项验证
+        var teaid = $("#teaId").val();
+        var teaname = $("#teaName").val().trim();
+        var teaphone = $("#teaPhone").val().trim();
+        var teapwd = hex_md5($("#teaPassword").val().trim());
+        var teasex = $("input[name='sex']:checked").val();
+        var teasta = $("#stuSta").val().trim();
+        var tearole = 0;
+        var teadriver = $("#driverClass").val().trim();
+        var teastartdate = $("#inDate").val().trim();
+        var teabirth = $("#birthDate").val().trim();
+        var teadescript = $("#teadesc").val().trim();
+
+        var teaimg = path;
+        console.log(path);
+
+        if (teaname.length == 0 || teaphone.length == 0 || teapwd == 0 || teastartdate == 0) {
+            layer.msg('请填写完整信息', {
+                time: 1000,
+                btn: ['好的']
+            })
+            return;
+        }
+        var json =
+            {
+                teaid: teaid,
+                teaname: teaname,
+                teaphone: teaphone,
+                teapwd: teapwd,
+                teasex: teasex,
+                teasta: teasta,
+                tearole: tearole,
+                teadriver: teadriver,
+                teastartdate: teastartdate,
+                teabirth: teabirth,
+                teadescript: teadescript,
+                teaimg: teaimg
+            }
+
+        $.ajax({
+            url: "/teacher/addTeacher",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    layer.msg("修改成功", {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+                getTeacher();
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+    }
+
+    //获得教练列表 多条件
+    function getTeacher() {
+        var teacherName = $("#teaNameTitle").val().trim();
+        var driverClassId = $("#driverTitle").val();
+        var staute = $("#teaStute").val();
+        var json = {teaname: teacherName, driverclassId: driverClassId, staute: staute}
+        console.log(json);
+        $.ajax({
+            url: "/teacher/getTeacherList",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    //渲染数据
+                    addtr(response.data);
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+    }
+
+    function addtr(data) {
+        $("#table").empty()
+        var tr;
+        for (var i = 0; i < data.length; i++) {
+            if (typeof (data[i].teaEndDate) == 'undefined') {
+                tr = $("<tr><td>" + (i + 1) + "</td><td>" + data[i].teaName + "</td>" +
+                    "<td>" + data[i].teaPhone + "</td><td>" + getSex(data[i].teaSex) + "</td>" +
+                    "<td>" + data[i].driverDescription + "</td><td>" + dateString(data[i].teaStartDate) + "</td>" +
+                    "<td>" + dateString(data[i].teaEndDate) + "</td>" +
+                    "<td><input hidden value='" + data[i].teaId + "'>" +
+                    "<a data-toggle='modal' data-target='#addmodal' onclick='getDetail(this)'>详情</a>|<a onclick='getaway(this)' >离职</a></td></tr>'");
+            } else {
+                tr = $("<tr><td>" + (i + 1) + "</td><td>" + data[i].teaName + "</td>" +
+                    "<td>" + data[i].teaPhone + "</td><td>" + getSex(data[i].teaSex) + "</td>" +
+                    "<td>" + data[i].driverDescription + "</td>" +
+                    "<td>" + dateString(data[i].teaStartDate) + "</td>" +
+                    "<td>" + dateString(data[i].teaEndDate) + "</td>" +
+                    "<td><input hidden value='" + data[i].teaId + "'><a " +
+                    "data-toggle='modal' data-target='#addmodal' onclick='getDetail(this)'>详情</a></td></tr>'");
+            }
+            $("#table").append(tr);
+        }
+
+    }
+
+    function getDetail(obj) {
+        var teaId = $(obj).parent().find('input').eq(0).val();
+        var json = {teaid: teaId};
+        $.ajax({
+            url: "/teacher/getTea",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    showDetail(response.data);
+                }
+
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+
+        })
+    }
+
+    // 离职
+    function getaway(obj) {
+        var teaId = $(obj).parent().find('input').eq(0).val();
+        var json = {teacherId: teaId};
+        $.ajax({
+            url: "/teacher/getaway",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    layer.msg("离职成功", {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                    getTeacher();
+                } else {
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+
+        })
+    }
+
+    function showDetail(data) {
+        $("#showImg").show();
+        $("#teaId").val(data.teaid);
+        $("#teaName").val(data.teaname);
+        $("#teaPhone").val(data.teaphone);
+        allpassword = data.teapwd
+        $("#teaPassword").val(data.teapwd);
+        $("#inDate").val(dateString(data.teastartdate));
+        $("#birthDate").val(dateString(data.teabirth));
+        $("#teadesc").val(data.teadescript);
+        $("#showImg").attr("src", "../img/" + data.teaimg);
+        //驾驶类型
+        var optiondriver = $("#driverClass option")
+        for (var i = 0; i < optiondriver.length; i++) {
+            if (optiondriver.get(i).value == data.teadriver) {
+                optiondriver.get(i).selected = true;
+                break;
+            }
+        }
+        // 状态
+        var stuSta = $("#stuSta option")
+        $("#stuSta").disabled = true;
+        for (var i = 0; i < stuSta.length; i++) {
+            if (stuSta.get(i).value == data.teasta) {
+                stuSta.get(i).selected = true;
+                break;
+            }
+        }
+        var sex = $("input[name='sex']");
+        for (var i = 0; i < sex.length; i++) {
+            if (sex.get(i).value == data.teasex) {
+                sex.get(i).checked = true;
+                break;
+            }
+        }
+        if (data.teaenddate != null) {
+            $("#submit").hide();
+        }
+
+    }
+
+    //文件上传
+    function fileupload() {
+        var formData = new FormData($("#uploadForm")[0]);
+        $.ajax({
+            url: '/login/upload',
+            type: 'post',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (respone) {
+                if (respone.code == 200) {
+                    path = respone.data;
+
+                }
+            },
+            error: function (respone) {
+                return null;
+            }
+        });
+    }
+
+
+    //获得驾照类型
+    function getDriverClass() {
+        $.ajax({
+            url: "/driver/getDriverList",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            success: function (response) {
+                if (response.code == 200) {
+                    addDriverClassforSelect(response.data);
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+    }
+
+    //驾照类型添加下拉框
+    function addDriverClassforSelect(data) {
+        var option;
+        var optiontile;
+        for (var i = 0; i < data.length; i++) {
+            option = $("<option value='" + data[i].driverid + "'>" + data[i].driverdescription + "</option>")
+            optiontile = $("<option value='" + data[i].driverid + "'>" + data[i].driverdescription + "</option>")
+            $("#driverClass").append(option);
+            $("#driverTitle").append(optiontile);
+        }
+    }
+
+
+    // 日期控件初始化
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#inDate'
+        });
+        laydate.render({
+            elem: '#birthDate'
+        });
+    })
+</script>
+</html>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.singulee.carschool.pojo.DetailMapper">
+    <resultMap id="BaseResultMap" type="com.singulee.carschool.pojo.Detail">
+        <id column="detailId" jdbcType="INTEGER" property="detailid"/>
+        <result column="courseId" jdbcType="INTEGER" property="courseid"/>
+        <result column="relationshipId" jdbcType="INTEGER" property="relationshipid"/>
+        <result column="stuSta" jdbcType="VARCHAR" property="stusta"/>
+        <result column="courseDate" jdbcType="DATE" property="courseDate"/>
+        <result column="extend1" jdbcType="VARCHAR" property="extend1"/>
+        <result column="extend2" jdbcType="VARCHAR" property="extend2"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+    BaseResultMap
+  </sql>
+    <!--批量添加-->
+    <insert id="inserList" parameterType="java.util.List">
+        insert into detail
+        (courseId, relationshipId,
+        stuSta, courseDate, extend1,
+        extend2)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.courseid}, #{item.relationshipid},
+            #{item.stusta}, #{item.courseDate}, #{item.extend1},
+            #{item.extend2})
+        </foreach>
+    </insert>
+    <!--批量修改-->
+    <update id="updateList" parameterType="java.util.Map">
+            update detail
+            set
+            extend2 = #{staute}
+            where detailId in(
+        <foreach collection="detailList" item="item" index="index" separator=",">
+            #{item}
+        </foreach>
+        )
+
+    </update>
+    <!--查询 课程表课当前表 通过日期 课程类型 通过教练查询id -->
+    <select id="selectDetailList" parameterType="map" resultType="Map">
+        select * from detail d,course c,relationship r
+        where r.relationshipId=d.relationshipId and d.courseId=c.courseId
+        and d.extend2 !="2"
+        <if test="courseDate!=null and courseDate!=''">and d.courseDate=#{courseDate}</if>
+        <if test="courseClass!=null and courseClass!=''">and d.extend1=#{courseClass}</if>
+        <if test="teacherId!=null and teacherId!=''">and r.teacherId=#{teacherId} and r.endTime is null</if>
+
+    </select>
+    <!--单独修改-->
+    <update id="updateone" parameterType="java.util.List">
+        update detail
+        <set>
+            <if test="courseid != null">
+                courseId = #{courseid,jdbcType=INTEGER},
+            </if>
+            <if test="relationshipid != null">
+                relationshipId = #{relationshipid,jdbcType=INTEGER},
+            </if>
+            <if test="stusta != null">
+                stuSta = #{stusta,jdbcType=VARCHAR},
+            </if>
+            <if test="courseDate != null">
+                courseDate = #{courseDate,jdbcType=DATE},
+            </if>
+            <if test="extend1 != null">
+                extend1 = #{extend1,jdbcType=VARCHAR},
+            </if>
+            <if test="extend2 != null">
+                extend2 = #{extend2,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where detailId = #{detailid,jdbcType=INTEGER}
+    </update>
+
+
+    <!--获得已发布的课程进行预约 courseDate courseClass teacherName carNumber stuid-->
+    <select id="getcourseList" parameterType="map" resultType="map">
+        select
+       cart.carId, cart.carNumber,
+       cart.carDriverClass,cart.staute,
+       cart.cartStartDate , cart.carEndDate,cart.extend2 as cart_extend2,
+        t.teaId,t.teaName, t.teaPhone,t.teaSex,t.teaSta,
+        t.teaRole,t.teaDriver, t.teaStartDate,
+        t.teaEndDate, t.teaBirth,
+        t.teaDescript, t.teaImg,
+        t.extend1 as  t_extend1,t.exten2 as t_exten2 ,
+        d.detailId, d.courseId, d.stuSta, d.courseDate, d.extend1 as  d_extend1, d.extend2 as d_extend2,
+        c.courseId, c.courseName, c.courseBegin,c.courseEnd
+        from detail d,course c,relationship r ,teacher t ,cart
+        where r.relationshipId=d.relationshipId and d.courseId=c.courseId and t.teaId=r.teacherId
+        and d.extend2 ='1' and d.stuSta='0' and r.endTime is null
+        <if test="courseDate!=null and courseDate!=''">and d.courseDate=#{courseDate}</if>
+          <choose>
+              <when test="courseClass=='科目三'">
+                 and d.extend1=#{courseClass} and r.teacherId= #{teacherId}
+              </when>
+              <otherwise>
+                  and d.extend1=#{courseClass}
+                  <if test="teacherName!=null and teacherName!=''">and t.teaName like  concat('%',#{teacherName},'%')</if>
+                  <if test="carNumber!=null and carNumber!=''">and cart.carNumber like  concat('%',#{carNumber},'%') </if>
+              </otherwise>
+          </choose>
+        GROUP BY d.detailId
+    </select>
+
+
+    <!--批量修改关系表-->
+    <update id="updateRelaList" parameterType="java.util.Map">
+        update detail
+        set
+        relationshipId=#{relationshipId}
+        where detailId in(
+        <foreach collection="detailIdlist" item="item" index="index" separator=",">
+            #{item}
+        </foreach>
+        )
+
+    </update>
+    <select id="selectById" parameterType="java.lang.Integer" resultType="com.singulee.carschool.pojo.Detail">
+        select
+        *
+        from detail
+        where detailId = #{detailid,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+
+    delete from detail
+    where detailId = #{detailid,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.singulee.carschool.pojo.Detail">
+
+    insert into detail (detailId, courseId, relationshipId, 
+      stuSta, courseDate, extend1,
+      extend2)
+    values (#{detailid,jdbcType=INTEGER}, #{courseid,jdbcType=INTEGER}, #{relationshipid,jdbcType=INTEGER}, 
+      #{stusta,jdbcType=VARCHAR}, #{courseDate,jdbcType=DATE}, #{extend1,jdbcType=VARCHAR}, 
+      #{extend2,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.singulee.carschool.pojo.Detail">
+
+        insert into detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="detailid != null">
+                detailId,
+            </if>
+            <if test="courseid != null">
+                courseId,
+            </if>
+            <if test="relationshipid != null">
+                relationshipId,
+            </if>
+            <if test="stusta != null">
+                stuSta,
+            </if>
+            <if test="courseDate != null">
+                courseDate,
+            </if>
+            <if test="extend1 != null">
+                extend1,
+            </if>
+            <if test="extend2 != null">
+                extend2,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="detailid != null">
+                #{detailid,jdbcType=INTEGER},
+            </if>
+            <if test="courseid != null">
+                #{courseid,jdbcType=INTEGER},
+            </if>
+            <if test="relationshipid != null">
+                #{relationshipid,jdbcType=INTEGER},
+            </if>
+            <if test="stusta != null">
+                #{stusta,jdbcType=VARCHAR},
+            </if>
+            <if test="courseDate != null">
+                #{courseDate,jdbcType=DATE},
+            </if>
+            <if test="extend1 != null">
+                #{extend1,jdbcType=VARCHAR},
+            </if>
+            <if test="extend2 != null">
+                #{extend2,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.singulee.carschool.pojo.Detail">
+    update detail
+    set courseId = #{courseid,jdbcType=INTEGER},
+      relationshipId = #{relationshipid,jdbcType=INTEGER},
+      stuSta = #{stusta,jdbcType=VARCHAR},
+      extend1 = #{extend1,jdbcType=VARCHAR},
+      extend2 = #{extend2,jdbcType=VARCHAR}
+    where detailId = #{detailid,jdbcType=INTEGER}
+  </update>
+</mapper>

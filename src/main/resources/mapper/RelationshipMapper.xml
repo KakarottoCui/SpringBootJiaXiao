@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.singulee.carschool.pojo.RelationshipMapper">
+    <resultMap id="relationshipMap" type="com.singulee.carschool.pojo.Relationship">
+
+        <id column="relationshipId" jdbcType="INTEGER" property="relationshipid"/>
+        <result column="teacherId" jdbcType="INTEGER" property="teacherid"/>
+        <result column="cartId" jdbcType="INTEGER" property="cartid"/>
+        <result column="startTime" jdbcType="TIMESTAMP" property="starttime"/>
+        <result column="endTime" jdbcType="TIMESTAMP" property="endtime"/>
+        <association property="cart" javaType="com.singulee.carschool.pojo.Cart">
+            <id column="carId" jdbcType="INTEGER" property="carid"/>
+            <result column="carNumber" jdbcType="VARCHAR" property="carnumber"/>
+            <result column="carDriverClass" jdbcType="INTEGER" property="cardriverclass"/>
+            <result column="staute" jdbcType="VARCHAR" property="staute"/>
+            <result column="cartStartDate" jdbcType="VARCHAR" property="cartstartdate"/>
+            <result column="carEndDate" jdbcType="VARCHAR" property="carenddate"/>
+            <result column="extend2" jdbcType="VARCHAR" property="extend2"/>
+        </association>
+        <association property="teacher" javaType="com.singulee.carschool.pojo.Teacher">
+            <id column="teaId" jdbcType="INTEGER" property="teaid"/>
+            <result column="teaName" jdbcType="VARCHAR" property="teaname"/>
+            <result column="teaPhone" jdbcType="VARCHAR" property="teaphone"/>
+            <result column="teaPwd" jdbcType="VARCHAR" property="teapwd"/>
+            <result column="teaSex" jdbcType="VARCHAR" property="teasex"/>
+            <result column="teaSta" jdbcType="VARCHAR" property="teasta"/>
+            <result column="teaRole" jdbcType="INTEGER" property="tearole"/>
+            <result column="teaDriver" jdbcType="VARCHAR" property="teadriver"/>
+            <result column="teaStartDate" jdbcType="DATE" property="teastartdate"/>
+            <result column="teaEndDate" jdbcType="DATE" property="teaenddate"/>
+            <result column="teaBirth" jdbcType="DATE" property="teabirth"/>
+            <result column="teaDescript" jdbcType="VARCHAR" property="teadescript"/>
+            <result column="teaImg" jdbcType="VARCHAR" property="teaimg"/>
+        </association>
+
+    </resultMap>
+    <!--t.teaId,t.teaName,t.teaPhone, t.teaSex,t.teaSta,-->
+    <!--t.teaRole,t.teaDriver, t.teaStartDate,t.teaEndDate,-->
+    <!--t.teaBirth,t.teaDescript,t.teaImg,t.extend1,t.exten2,-->
+    <!--c.carId,c.carNumber,c.carDriverClass, c.staute,-->
+    <!--c.cartStartDate , c.carEndDate, c.extend2,-->
+    <sql id="Base_Column_List">
+
+    relationshipId, teacherId, cartId, startTime, endTime
+
+  </sql>
+    <!--插入-->
+    <insert id="insert" parameterType="com.singulee.carschool.pojo.Relationship"  useGeneratedKeys="true" keyProperty="relationshipid" >
+
+    insert into relationship (teacherId, cartId,
+      startTime, endTime)
+    values (#{teacherid,jdbcType=INTEGER}, #{cartid,jdbcType=INTEGER},
+      #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP})
+  </insert>
+    <!--修改-->
+    <update id="update" parameterType="com.singulee.carschool.pojo.Relationship">
+    update relationship
+    set teacherId = #{teacherid,jdbcType=INTEGER},
+      cartId = #{cartid,jdbcType=INTEGER},
+      startTime = #{starttime,jdbcType=TIMESTAMP},
+      endTime = #{endtime,jdbcType=TIMESTAMP}
+    where relationshipId = #{relationshipid,jdbcType=INTEGER}
+  </update>
+    <!--查询记录 多条件 人 id 姓名 车 id 车牌  驾照类型  -->
+    <select id="getHistory" resultMap="relationshipMap" parameterType="Map">
+        select * from
+         relationship r ,teacher t ,cart c
+         where
+         r.teacherId=teaId and r.cartId =c.carId and r.endTime is not  null
+         <if test="carId!=null and catId!=''">and r.cartId=#{catId}</if>
+         <if test="carNumber!=null and carNumber!=''">and c.carNumber like   concat('%',#{carNumber},'%')</if>
+         <if test="teacherId!=null and teacherId!=''">and r.teacherId=#{teacherId} </if>
+         <if test="teacherName!=null and teacherName!=''">and t.teaName like concat('%', #{teacherName},'%')</if>
+         <if test="driverclassId!=null and driverclassId!=''"> and  c.carDriverClass=#{driverclassId}</if>
+    </select>
+
+    <!--当前关联 条件 人id 车id  姓名 模糊 车牌模糊-->
+    <select id="contant" parameterType="map" resultMap="relationshipMap">
+        select * from relationship r ,teacher t ,cart c
+        where r.teacherId=t.teaId and r.endTime is null
+        and r.cartId =c.carId
+        <if test="carNumber!=null and carNumber!=''"> and c.carNumber like  concat('%',#{carNumber},'%')</if>
+        <if test="carId!=null and carId!=''">and  c.carId=#{carId}</if>
+        <if test="teacherId!=null and teacherId!=''"> and r.teacherId=#{teacherId}</if>
+        <if test="teacherName!=null and teacherName!=''">and t.teaName like  concat('%',#{teacherName},'%')</if>
+        <if test="driverclassId!=null and driverclassId!=''">and t.teaDriver=#{driverclassId}</if>
+    </select>
+    <!--空闲车 列表-->
+    <select id="emptyCar"  resultType="com.singulee.carschool.pojo.Cart" parameterType="map">
+        select *  from cart where carId not in
+         (select cartId from relationship where endTime is null)
+        and staute ='备用'
+        <if test="driverclassId!=null and driverclassId!=''">
+            and  carDriverClass=#{driverclassId}
+        </if>
+
+    </select>
+    <!--空闲教练 列表-->
+    <select id="emptyTeacher" resultType="com.singulee.carschool.pojo.Teacher" parameterType="map">
+      select
+      t.teaId,
+        t.teaName,
+        t.teaPhone,
+        t.teaSex,
+        t.teaSta,
+        t.teaRole,
+        t.teaDriver,
+        t.teaStartDate,
+        t.teaEndDate,
+        t.teaBirth,
+        t.teaDescript,
+        t.teaImg from teacher t where
+        teaId not in
+        (select teacherId from relationship where endTime is null)
+        and teaEndDate is null
+        <if test="driverclassId!=null and driverclassId!=''">
+            and  t.teaDriver=#{driverclassId}
+        </if>
+        <if test="teacherName!=null and teacherName!=''">
+            and t.teaName like concat('%',#{teacherName},'%')
+        </if>
+    </select>
+
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="relationshipMap">
+
+        select
+        <include refid="Base_Column_List"/>
+        from relationship
+        where relationshipId = #{relationshipid,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+
+    delete from relationship
+    where relationshipId = #{relationshipid,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insertSelective" parameterType="com.singulee.carschool.pojo.Relationship">
+        insert into relationship
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="relationshipid != null">
+                relationshipId,
+            </if>
+            <if test="teacherid != null">
+                teacherId,
+            </if>
+            <if test="cartid != null">
+                cartId,
+            </if>
+            <if test="starttime != null">
+                startTime,
+            </if>
+            <if test="endtime != null">
+                endTime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="relationshipid != null">
+                #{relationshipid,jdbcType=INTEGER},
+            </if>
+            <if test="teacherid != null">
+                #{teacherid,jdbcType=INTEGER},
+            </if>
+            <if test="cartid != null">
+                #{cartid,jdbcType=INTEGER},
+            </if>
+            <if test="starttime != null">
+                #{starttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endtime != null">
+                #{endtime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.singulee.carschool.pojo.Relationship">
+        update relationship
+        <set>
+            <if test="teacherid != null">
+                teacherId = #{teacherid,jdbcType=INTEGER},
+            </if>
+            <if test="cartid != null">
+                cartId = #{cartid,jdbcType=INTEGER},
+            </if>
+            <if test="starttime != null">
+                startTime = #{starttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endtime != null">
+                endTime = #{endtime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where relationshipId = #{relationshipid,jdbcType=INTEGER}
+    </update>
+
+</mapper>

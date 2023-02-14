@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>预约练车</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-fileupload.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .list-group a {
+            background-color: #393d49;
+            border: 0px;
+            color: white;
+
+        }
+
+        .list-group a:hover {
+            background-color: #12967c;
+            border: 0px;
+            color: white;
+
+        }
+
+    </style>
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="">
+            <div class="layui-logo">驾校预约管理系统</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img id="img" src="../img/mmexport1508332669479.jpg" class="layui-nav-img"><span id="usernameheader">xs-shuai </span></a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="userInfo.html">个人中心</a>
+                    </dd>
+                    <dd>
+                        <a href="/login/logout">注销登录</a>
+                    </dd>
+
+                </dl>
+            </li>
+
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <div class="list-group">
+                <a href="index.html" class="list-group-item ">首页</a>
+                <a href="coursePlan.html" class="list-group-item active">预约练车</a>
+                <a href="myPaln.html" class="list-group-item">我的预约</a>
+                <a href="courseHistory.html" class="list-group-item ">练车记录</a>
+                <a href="userInfo.html" class="list-group-item">个人中心</a>
+            </div>
+        </div>
+    </div>
+    <!--添加课程 莫态框-->
+    <!--表格查询 日期 类型 当前日期之前  日期输入框为空时-->
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <p class="h3">预约练车</p>
+        <div class="col-md-12" style="margin-top: 15px">
+            <form class="form-inline">
+                <div class="form-group col-md-3">
+                    <div class="col-md-10  layui-input-inline">
+                        <input type="text" class="layui-input" id="courseDate" placeholder="课程时间">
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <div class="col-md-10 form-inline">
+                        <input type="text" class="form-control" placeholder="车牌号" id="carNumber">
+                    </div>
+                </div>
+                <div class="form-group col-md-3 form-inline">
+                    <div class="col-md-10 ">
+                        <input type="text" class="form-control" placeholder="教练姓名" id="teacherName">
+                    </div>
+                </div>
+                <div class="form-group col-md-3 form-inline">
+                    <label>课程类型</label>
+                    <select class="form-control" id="courseType">
+                        <option value="科目二基础">科目二基础</option>
+                        <option value="科目二">科目二</option>
+                        <option value="科目三">科目三</option>
+                    </select>
+                </div>
+
+            </form>
+
+        </div>
+        <div class="col-md-12" style="margin-top: 5px">
+            <input type="button" id="search" class="btn  btn-success" value="查询"></div>
+
+        <div class="col-md-12" style="margin-top: 5px">
+            <div class="">
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>教练</th>
+                        <th>车辆</th>
+                        <th>日期</th>
+                        <th>时间段</th>
+                        <th>课程类型</th>
+                        <th>教练电话</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table">
+
+                    </tbody>
+
+
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="layui-footer">
+        © 2022 <a href="#">singulee.com</a>
+    </div>
+
+</div>
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-fileupload.js"></script>
+<script src="../layui/layui.all.js"></script>
+<script src="../js/myjs.js"></script>
+<script>
+    //初始化时间控件
+
+    $(function () {
+
+        shouimg();
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#courseDate',
+                min:dateString((new Date()).getTime()),
+                value: new Date(new Date().getTime() + (1000 * 60 * 60 * 24))
+                , isInitValue: true
+            });
+        })
+        getCourseList();
+        $("#search").click(getCourseList)
+
+    })
+
+    //课程预约
+    function orderCourse(obj) {
+
+
+        if(!confirm("是否确认预约")){
+            return false;
+        }
+
+        var detailId= $(obj).parent().find('input').eq(0).val();
+        var json={detailid:detailId}
+        $.ajax({
+            url: "/detail/orderCourse",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    console.log(response.data);
+
+
+                }
+                else {
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+                getCourseList();
+
+
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+        getCourseList();
+
+
+    }
+
+
+    //获得该日期的课程
+    function getCourseList() {
+        // courseDate courseClass teacherName carNumber
+        var json = {
+            courseDate: $("#courseDate").val(), courseClass: $("#courseType").val(),
+            teacherName: $("#teacherName").val().trim(), carNumber: $("#carNumber").val().trim()
+        }
+        $.ajax({
+            url: "/detail/getsaveCourse",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    showtr(response.data)
+                }
+                else {
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+
+
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+
+    function showtr(data) {
+        $("#table").empty();
+        var tr;
+        for (var i=0;i<data.length;i++){
+            tr=$("<tr><td>"+(i+1)+"</td><td>"+data[i].teaName+"</td><td>"+data[i].carNumber+"</td><td>"+dateString(data[i].courseDate)+"</td>" +
+                "<td>"+data[i].courseBegin+'-'+data[i].courseEnd+"</td>" +
+                "<td>"+data[i].d_extend1+"</td><td>"+data[i].teaPhone+"</td><td><input type='hidden' value='"+ data[i].detailId+"'><a  onclick='orderCourse(this)'>预约</a></td></tr>")
+            $("#table").append(tr);
+        }
+    }
+
+
+
+
+
+    // 显示表头
+    // 教练 车辆 日期 开始时间 结束时间 课程类型 教练电话
+
+    //    编写思路
+    //    初始加载当前日期之后的课程 课程类型为当前课程的 之前的课程类型不收约束
+    //    科目类型为科目三时 只能选择当前绑定的教练以及教练的车
+    //    预约时:添加order表 修改detail表
+    //    取消,同时修改两表
+
+
+</script>
+</body>
+
+</html>

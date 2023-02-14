@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>我的学员</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-fileupload.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .list-group a {
+            background-color: #393d49;
+            border: 0px;
+            color: white;
+
+        }
+
+        .list-group a:hover {
+            background-color: #12967c;
+            border: 0px;
+            color: white;
+
+        }
+
+    </style>
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="">
+            <div class="layui-logo">驾校预约管理系统</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img id="img" src="../img/mmexport1508332669479.jpg" class="layui-nav-img"><span id="usernameheader">xs-shuai </span></a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="userInfo.html">个人中心</a>
+                    </dd>
+                    <dd>
+                        <a href="/login/logout">注销登录</a>
+                    </dd>
+
+                </dl>
+            </li>
+
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <div class="list-group">
+                <a href="index.html" class="list-group-item ">首页</a>
+                <a href="courseManager.html" class="list-group-item">我的课程</a>
+                <a href="mystudent.html" class="list-group-item active">我的学员</a>
+                <a href="mycart.html" class="list-group-item">车辆中心</a>
+                <a href="userInfo.html" class="list-group-item">个人中心</a>
+            </div>
+        </div>
+    </div>
+    <!--添加课程 莫态框-->
+    <!--表格查询 日期 类型 当前日期之前  日期输入框为空时-->
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <p class="h3">课程安排</p>
+        <div class="col-md-12" style="margin-top: 15px">
+            <form class="form-inline">
+                <div class="form-group col-md-3">
+                    <div class="col-md-10 ">
+                        <input type="text" class="form-control" id="studentname" placeholder="学员姓名">
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>学习状态</label>
+                    <select class="form-control" id="courseTypetitle">
+                        <option value="">不限</option>
+                        <option value="科目二基础">科目二基础</option>
+                        <option value="科目二">科目二</option>
+                        <option value="科目三">科目三</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>毕业状态</label>
+                    <select class="form-control" id="studyLevel">
+                        <option value="">不限</option>
+                        <option value="0">已毕业</option>
+                        <option value="1" selected>未毕业</option>
+                    </select>
+                </div>
+
+            </form>
+            <input type="button" id="searchTitle" class="btn  btn-success" value="查询">
+        </div>
+        <div class="col-md-12" style="margin-top: 5px">
+            <div class="">
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>姓名</th>
+                        <th>电话</th>
+                        <th>当前状态</th>
+                        <th>课时数</th>
+                        <th>报名日期</th>
+                        <th>毕业日期</th>
+                        <th>详情</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table">
+
+                    </tbody>
+                </table>
+                <div>
+                    <ul class="pager">
+                        <li><a href="#" id="last">上一页</a></li>
+                        <li id="pageInfo"></li>
+                        <li><a href="#" id="next">下一页</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="layui-footer">
+        © 2022 <a href="#">singulee.com</a>
+    </div>
+    <!--模态框-->
+    <div class="modal" id="addmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+         data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        学员情况
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <!--页面设计-->
+                    <div class="col-md-12">
+                        <input type="text" hidden id="studentId">
+                        <div class="col-md-4">
+                            <label class="col-sm-3 control-label">
+                                姓名</label>
+                            <div class="col-sm-8" id="name">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="col-sm-3 control-label">
+                                电话</label>
+                            <div class="col-sm-8" id="phone">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="col-sm-3 control-label">
+                                性别</label>
+                            <div class="col-sm-8" id="sex">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="col-sm-3 control-label">
+                                报名时间</label>
+                            <div class="col-sm-8" id="startTime">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="col-sm-3 control-label">
+                                结束时间</label>
+                            <div class="col-sm-8" id="endTime">
+                            </div>
+                            <button id="end" class="btn-info btn">毕业</button>
+                        </div>
+                        <div class="col-md-4 form-inline ">
+                            <label>课程状态</label>
+                            <select class="form-control" id="courseType">
+                                <option value="科目二基础">科目二基础</option>
+                                <option value="科目二">科目二</option>
+                                <option value="科目三">科目三</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="col-md-3">
+                                <label class="col-sm-3 control-label">
+                                    日期</label>
+                                <div class="col-sm-8" >
+                                    <input id="startDate" class="form-control" >
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="col-sm-3 control-label">
+                                    期限</label>
+                                <div class="col-sm-9" >
+                                    <select class="form-control" id="datelevel">
+                                        <option value="7" selected>一周</option>
+                                        <option value="30" >一月</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="col-sm-3 control-label">
+                                    类型</label>
+                                <div class="col-sm-9" >
+                                    <select class="form-control" id="courseTypeforinfo">
+                                        <option value="科目二基础" selected>科目二基础</option>
+                                        <option value="科目二">科目二</option>
+                                        <option value="科目三">科目三</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="col-md-1">
+                                <input type="button"  id="button" class="btn btn-info" value="查询">
+                            </div>
+                        </div>
+                        <div id="tu" class="col-md-12" style="width:600px; height: 400px" >
+                            统计图
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save" type="button" class="btn btn-primary">
+                        修改
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        关闭
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-fileupload.js"></script>
+<script src="../layui/layui.all.js"></script>
+<script src="../js/myjs.js"></script>
+<script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
+<script>
+    var page = 1;
+
+    $(function () {
+        shouimg();
+        getstudent();
+        $("#searchTitle").click(getstudent);
+        $("#button").click(showPicture);
+        pageSearch();
+        $("#save").click(update);
+        $("#end").click(end);
+
+
+    })
+    //修改学习阶段
+    function update() {
+        var json={studentId:$("#studentId").val(),courseType:$("#courseType").val()}
+        $.ajax({
+            url: "/student/updateStaute",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    layer.msg('修改成功', {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+
+
+    }
+    //毕业
+    function end() {
+        var json={studentId:$("#studentId").val()}
+        $.ajax({
+            url: "/student/end",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    layer.msg('修改成功', {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+                else {
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+
+    function showPicture(){
+        var myChart = echarts.init(document.getElementById('tu'));
+        // 显示标题，图例和空的坐标轴
+        myChart.setOption({
+                legend: {
+                    data:['评分']
+                },
+                xAxis : {
+                    data : []
+                },
+                yAxis : {},
+                series : [
+                    {
+                        name:'评分',
+                        type:'bar',
+                        data:[]
+                    }
+                ]
+
+
+
+        });
+
+        myChart.showLoading();    //数据加载完之前先显示一段简单的loading动画
+
+        var date=[];    //类别数组（实际用来盛放X轴坐标值）
+        var gread=[];    //销量数组（实际用来盛放Y坐标值）
+        // type类型(7 一周,30 一月) studentId:  日期 date:   courseTypeforinfo
+        var json={studentId:$("#studentId").val(),type:$("#datelevel").val(),date:$("#startDate").val()
+        ,courseTyep:$("#courseTypeforinfo").val()}
+        $.ajax({
+            type : "post",
+            cache: false,
+            async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+            url : "/order/getGreadList",    //请求发送到TestServlet处
+            contentType: "application/json",
+            dataType : "json",        //返回数据形式为json
+            data: JSON.stringify(json),
+
+            success : function(result) {
+                //请求成功时执行该函数内容，result即为服务器返回的json对象
+                if (result.code==200) {
+                    for(var i=0;i<result.data.length;i++){
+                        date.push(dateString(result.data[i].coursedate));    //挨个取出类别并填入类别数组
+                    }
+                    for(var i=0;i<result.data.length;i++){
+                        gread.push(result.data[i].gread);    //挨个取出销量并填入销量数组
+                    }
+                    myChart.hideLoading();    //隐藏加载动画
+                    myChart.setOption({        //加载数据图表
+                        tooltip : {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data:['评分']
+                        },
+                        toolbox: {
+                            show : true,
+                            feature : {
+                                mark : {show: true},
+                                dataView : {show: true, readOnly: false},
+                                magicType : {show: true, type: ['line', 'bar']},
+                                restore : {show: true},
+                                saveAsImage : {show: true}
+                            }
+                        },
+                        calculable : true,
+                        xAxis: {
+                            data: date
+                        },
+                        yAxis:{},
+                        series: [{
+                            name: '评分',
+                            type:'bar',
+                            data: gread
+                        }]
+                    });
+
+                }
+                else {
+                    layer.msg('暂无数据', {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+
+            },
+            error : function(errorMsg) {
+                alert("图表请求数据失败!");
+                myChart.hideLoading();
+            }
+        })
+
+
+
+    }
+
+
+    //显示图形
+    //显示模态框
+    function getInfo(obj) {
+        var json = {stuid: $(obj).parent().find('input').eq(0).val()};
+        $.ajax({
+            url: "/student/getStudent",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    showStuInfo(response.data);
+                    showPicture();
+                }
+
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+
+    }
+
+//渲染莫态框的数据
+    function showStuInfo(data) {
+
+        $("#studentId").val(data.stuid);
+        $("#name").text(data.stuname);
+        $("#phone").text(data.stuphone);
+        $("#sex").text(data.stusex=='0'?"男":"女");
+        $("#startTime").text(dateString(data.stustartdate));
+        if(data.stuenddate!=null){
+            $("#end").hide();
+            $("#endTime").text(dateString(data.stuenddate));
+        }
+        else {
+            $("#end").show();
+        }
+
+
+        var option=$("#courseType option");
+        for(var i=0;i<option.length;i++){
+            if (option.get(i).value == data.stustust) {
+                option.get(i).selected = true;
+                break;
+            }
+        }
+
+
+
+    }
+
+    //分页
+    function pageSearch() {
+        $("#next").click(function () {
+            page = page + 1;
+            getstudent()
+        });
+        $("#next").click(function () {
+            page = page - 1;
+            getstudent()
+        });
+
+    }
+
+
+    //获得
+    function getstudent() {
+        //获取已发布的课程
+        var json = {
+            studentname: $("#studentname").val().trim(),
+            courseType: $("#courseTypetitle").val(),
+            studyLevel: $("#studyLevel").val(),
+            page: page
+        }
+        $.ajax({
+            url: "/student/getMystudent",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    showtr(response)
+                }
+                else {
+                    layer.msg('无数据', {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                    $("#table").empty();
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+    }
+
+    function showtr(response) {
+        //渲染tr
+        $("#table").empty();
+        var tr;
+        for (var i = 0; i < response.data.length; i++) {
+            tr = $("<tr><td>" + (i + 1) + "</td><td>" + response.data[i].stuName + "</td>" +
+                "<td>" + response.data[i].stuPhone + "</td>" +
+                "<td>" + response.data[i].stuStust + "</td>" +
+                "<td>" + response.data[i].orderCount + "</td>" +
+                "<td>" + dateString(response.data[i].stuStartDate) + "</td>" +
+                "<td>" + dateString(response.data[i].stuEndDate) + "</td>" +
+                "<td><input value='" + response.data[i].stuId + "' hidden><a href='#' data-toggle='modal' data-target='#addmodal' onclick='getInfo(this)'>详情</a></td>" +
+                "</tr>");
+            $("#table").append(tr);
+        }
+        //渲染页码
+        page = response.page;
+        if (page == 1) {
+            $("#last").hide();
+        }
+        else {
+            $("#last").show();
+        }
+        if (page == response.total) {
+            $("#next").hide();
+        }
+        else {
+            $("#next").show();
+        }
+        $("#pageInfo").text("当前" + response.page + "页,共" + response.total + "页,共" + response.count + "条数据");
+
+    }
+
+
+    // /查看我的学员信息 分页
+    //模态框 修改学习情况   图像化显示
+    //
+
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#startDate'
+            ,value:new Date(new Date().getTime()-7*1000*60*60*24)
+        });
+    })
+</script>
+</body>
+
+</html>

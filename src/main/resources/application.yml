@@ -1,0 +1,39 @@
+server:
+  servlet:
+    context-path: /
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/car_school?useUnicode=true&characterEncoding=utf-8&useSSL=false&tcpRcvBuf=1024000&autoReconnect=true&failOverReadOnly=false&connectTimeout=0&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    userName: root
+    password: 
+    driverClassName : com.mysql.jdbc.Driver
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    timeout: 120000
+    readTimeout: 120000
+    database: 5
+    jedis:
+      pool:
+        min-idle: 8
+        max-idle: 500
+        max-active: 2000
+        max-wait: 60000
+  locationTemp: /Users/singer/data #上传文件的临时目录
+  mvc:
+    view:
+      prefix: /WEB-INF/
+      suffix: .jsp
+  web:
+    resources:
+      static-locations: classpath:webapp/
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml    # mapper映射文件位置
+  type-aliases-package: com.singulee.carschool.pojo    # 实体类所在的位置
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    mapUnderscoreToCamelCase: true
+
+

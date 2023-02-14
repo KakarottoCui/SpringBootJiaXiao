@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>课程管理</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-fileupload.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .list-group a {
+            background-color: #393d49;
+            border: 0px;
+            color: white;
+
+        }
+
+        .list-group a:hover {
+            background-color: #12967c;
+            border: 0px;
+            color: white;
+
+        }
+
+    </style>
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="">
+            <div class="layui-logo">驾校预约管理系统</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img id="img" src="../img/mmexport1508332669479.jpg" class="layui-nav-img"><span
+                        id="usernameheader">xs-shuai </span></a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="userInfo.html">个人中心</a>
+                    </dd>
+                    <dd>
+                        <a href="/login/logout">注销登录</a>
+                    </dd>
+
+                </dl>
+            </li>
+
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <div class="list-group">
+                <a href="index.html" class="list-group-item ">首页</a>
+                <a href="courseManager.html" class="list-group-item active">我的课程</a>
+                <a href="mystudent.html" class="list-group-item">我的学员</a>
+                <a href="mycart.html" class="list-group-item">车辆中心</a>
+                <a href="userInfo.html" class="list-group-item">个人中心</a>
+            </div>
+        </div>
+    </div>
+    <!--添加课程 莫态框-->
+    <!--表格查询 日期 类型 当前日期之前  日期输入框为空时-->
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <p class="h3">课程安排</p>
+        <div class="col-md-12">
+            <div class="col-md-3">
+                <button type="button" class="btn btn-info" id="addbutton" data-toggle="modal" data-target="#addmodal"
+                        aria-label="Left Align">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true">添加课程</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-12" style="margin-top: 15px">
+            <form class="form-inline">
+                <div class="form-group col-md-3">
+                    <div>
+                        <input type="text" class="form-control" id="startDate" placeholder="课程日期">
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>课程类型</label>
+                    <select class="form-control" id="courseTypetitle">
+                        <option value="">不限</option>
+                        <option value="科目二基础">科目二基础</option>
+                        <option value="科目二">科目二</option>
+                        <option value="科目三">科目三</option>
+                    </select>
+                </div>
+
+            </form>
+            <input type="button" id="searchTitle" class="btn  btn-success" value="查询">
+        </div>
+        <div class="col-md-12" style="margin-top: 5px">
+            <div class="">
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>课程日期</th>
+                        <th>课程段</th>
+                        <th>科目类型</th>
+                        <th>课程状态</th>
+                        <th>预约人</th>
+                        <th>电话</th>
+                        <th>预定时间</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table">
+
+                    </tbody>
+
+
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="layui-footer">
+        © 2022 <a href="#">singulee.com</a>
+    </div>
+    <!--模态框-->
+    <div class="modal" id="addmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+         data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title">
+                        课程管理
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <!--页面设计-->
+                    <div class="form-horizontal">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                <label class="col-sm-3 control-label">
+                                    日期</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="layui-input" id="courseDate" placeholder="课程日期">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-inline">
+                                <label>课程设置为</label>
+                                <select class="form-control" id="courseType">
+                                    <option value="科目二基础">科目二基础</option>
+                                    <option value="科目二">科目二</option>
+                                    <option value="科目三">科目三</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 ">
+                                <input type="button" class="btn btn-info" value="查找" id="search">
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-12 row" style="margin-top: 5px">
+                                <div class="col-md-5 "><strong>课程列表</strong></div>
+                                <div class="col-md-5 col-md-offset-1"><strong>已添加课程</strong></div>
+                            </div>
+                            <div class="col-md-12">
+
+                                <div class="col-md-5 ">
+                                    <div class="col-md-12 row pre-scrollable" style="height: 340px;">
+                                        <ul class="list-group" id="courseList">
+                                        </ul>
+                                    </div>
+                                    <input type="button" id="addCourse" class="btn btn-info" value="提交">
+                                </div>
+
+                                <div class="col-md-7">
+                                    <div class="col-md-12 row pre-scrollable " style="height: 340px;">
+                                        <ul class="list-group" id="detailList">
+
+                                        </ul>
+                                    </div>
+                                    <input type="button" id="remove" class="btn btn-warning" value="移除">
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save" type="button" class="btn btn-primary">
+                        发布
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        关闭
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-fileupload.js"></script>
+<script src="../layui/layui.all.js"></script>
+<script src="../js/myjs.js"></script>
+<script>
+    //初始化时间控件
+    var tmp;
+    $(function () {
+        shouimg();
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#courseDate',
+                min: dateString((new Date()).getTime()),
+                value: new Date(new Date() + (1000 * 60 * 60 * 24))
+            });
+            laydate.render({
+                elem: '#startDate',
+                value: new Date()
+            });
+        })
+
+        showOrderDetail();
+        getcourseList()
+        addcourse();
+        //查找
+        $("#search").click(function () {
+            getcourseList();
+        })
+        removecourse();
+        save();
+        $("#searchTitle").click(showOrderDetail)
+
+
+    })
+
+    //条件查询获取发布  时间课程 时间精确查找   预约人  预约电话
+    function getOrderDetail(data) {
+        var json = {
+            courseClass: $("#courseTypetitle").val(), courseDate: $("#startDate").val()
+        }
+        $.ajax({
+            url: "/order/getOrderDeatil",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+
+                //组合渲染
+                // 不需要分页
+                $("#table").empty();
+                var action;
+                for (var i = 0; i < data.length; i++) {
+                    action = false;
+                    var tr;
+                    if (data[i].extend2 == "0") {
+                        tr = $("<tr><td>" + (i + 1) + "</td>" +
+                            "<td>" + dateString(data[i].courseDate) + "</td>" +
+                            "<td>" + data[i].courseBegin + "-" + data[i].courseEnd + "</td>" +
+                            "<td>" + data[i].extend1 + "</td>" +
+                            "<td>未发布</td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "</tr>");
+                    } else {
+                        //有数据时候才进行渲染
+                        if (response.code == 200) {
+                            for (var j = 0; j < response.data.length; j++) {
+                                //detailId相同 是渲染data 否则不相同 渲染 预约的数据
+                                if (data[i].detailId == response.data[j].detailId) {
+                                    tr = $("<tr><td>" + (i + 1) + "</td>" +
+                                        "<td>" + dateString(response.data[j].courseDate) + "</td>" +
+                                        "<td>" + response.data[j].courseBegin + "-" + response.data[j].courseEnd + "</td>" +
+                                        "<td>" + response.data[j].extend1 + "</td>" +
+                                        "<td>已发布</td>" +
+                                        "<td>" + response.data[j].stuName + "</td>" +
+                                        "<td>" + response.data[j].stuPhone + "</td>" +
+                                        "<td>" + datetimeStr(response.data[j].ordertime) + "</td>" +
+                                        "</tr>");
+                                    action = true;
+                                    $("#table").append(tr);
+                                    //渲染
+                                    break;//退出本次循环
+                                }
+                            }
+                        }
+                        if (action) {
+                            //继续渲染下一个
+                            continue;
+                        }
+
+                        // 否则渲染当前对象 未预约的数据
+                        tr = $("<tr><td>" + (i + 1) + "</td>" +
+                            "<td>" + dateString(data[i].courseDate) + "</td>" +
+                            "<td>" + data[i].courseBegin + "-" + data[i].courseEnd + "</td>" +
+                            "<td>" + data[i].extend1 + "</td>" +
+                            "<td>已发布</td>" +
+                            "<td>--</td>" +
+                            "<td>--</td>" +
+                            "<td>--</td>" +
+                            "</tr>");
+
+
+                    }
+                    $("#table").append(tr);
+                }
+
+            }
+
+
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+
+    //主页面获取发布的课程
+    function showOrderDetail() {
+        //获取已发布的课程
+        var json = {courseDate: $("#startDate").val(), courseClass: $("#courseTypetitle").val()}
+        $.ajax({
+            url: "/course/courseDetail",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    getOrderDetail(response.data);
+                } else {
+                    $("#table").empty();
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+    }
+
+
+    //发布
+    function save() {
+        $("#save").click(function () {
+            var checked = [];
+            $("input:checkbox[name='detailName']").each(function () {
+                checked.push($(this).val());
+            })
+            var json = {detailId: checked};
+            checked = [];
+            $.ajax({
+                url: "/course/saveDetail",
+                type: "post",
+                cache: false,
+                contentType: "application/json",
+                datatype: "json",
+                data: JSON.stringify(json),
+                success: function (response) {
+                    if (response.code == 200) {
+                        //提示  刷新主界面
+                        layer.msg(response.msg, {
+                            time: 1000,
+                            btn: ['好的']
+                        })
+                    }
+                    getcourseList();
+                }
+                ,
+                error: function (response) {
+                    console.log("出错返回: " + response);
+                    console.log("出错数据: " + JSON.stringify(response));
+                }
+            });
+
+
+        })
+
+
+    }
+
+    // 日期修改时查询日期该日期的是课程及草稿
+    //先查询草稿
+    //遍历课程表 相同 隐藏
+
+    //添加
+    function addcourse() {
+        var checked = [];
+        $("#addCourse").click(function () {
+            $("input:checkbox[name='courseTime']:checked").each(function () {
+                checked.push($(this).val());
+            })
+
+            console.log("id" + checked)
+            if (checked.length == 0) {
+                layer.msg('没有选择添加的课程', {
+                    time: 1000,
+                    btn: ['好的']
+                })
+                return;
+            }
+            var json = {courseType: $("#courseType").val(), courseDate: $("#courseDate").val(), courseList: checked}
+            checked = []
+            $.ajax({
+                url: "/course/addCourseDetail",
+                type: "post",
+                cache: false,
+                contentType: "application/json",
+                datatype: "json",
+                data: JSON.stringify(json),
+                success: function (response) {
+                    if (response.code == 200) {
+                        getcourseList();
+
+                    }
+                }
+                ,
+                error: function (response) {
+                    console.log("出错返回: " + response);
+                    console.log("出错数据: " + JSON.stringify(response));
+                }
+            });
+        });
+
+    }
+
+    //移除
+    function removecourse() {
+        // 加载的时候查询草稿
+        var checked = [];
+        $("#remove").click(function () {
+            $("input:checkbox[name='detailName']:checked").each(function () {
+                checked.push($(this).val());
+            })
+            if (checked.length == 0) {
+                layer.msg('没有选择移除的课程', {
+                    time: 1000,
+                    btn: ['好的']
+                })
+                return;
+            }
+            var json = {detailId: checked}
+            checked = [];
+            $.ajax({
+                url: "/course/removeDetail",
+                type: "post",
+                cache: false,
+                contentType: "application/json",
+                datatype: "json",
+                data: JSON.stringify(json),
+                success: function (response) {
+                    if (response.code != 200) {
+                        layer.msg(response.msg, {
+                            time: 1000,
+                            btn: ['好的']
+                        })
+                    }
+                    getcourseList();
+                }
+                ,
+                error: function (response) {
+                    console.log("出错返回: " + response);
+                    console.log("出错数据: " + JSON.stringify(response));
+                }
+            });
+        })
+
+    }
+
+
+    //据获已发布取课程列表(莫态框中)
+    function getcourseList() {
+        tmp = null;
+        var json = {courseDate: $("#courseDate").val()}
+        $.ajax({
+            url: "/course/courseDetail",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    //渲染已选课程
+                    tmp = response.data;
+                    getCourseTime(tmp);
+                } else {
+                    getCourseTime(tmp);
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+
+    //获取课程列表
+    function getCourseTime(dataCourse) {
+        $.ajax({
+            url: "/course/getCourses",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            success: function (response) {
+                if (response.code == 200) {
+                    showCourse(response.data, dataCourse)
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+
+
+    //显示课程时间
+    function showCourse(data, dataCourse) {
+        console.log(data)
+        console.log(dataCourse)
+        //先渲染课程数据
+        $("#courseList").empty();
+        $("#detailList").empty()
+        if (dataCourse == null) {
+            var li;
+            for (var i = 0; i < data.length; i++) {
+                li = $(" <li><label>" +
+                    "<input type='checkbox' name='courseTime' value='" + data[i].courseid + "'>" + data[i].coursename + "(" + timerString(data[i].coursebegin) + "-" + timerString(data[i].courseend) + ")" +
+                    "</label></li>");
+                $("#courseList").append(li);
+            }
+        } else {
+            var li;
+            for (var i = 0; i < dataCourse.length; i++) {
+                if (dataCourse[i].stuSta == 0) {//未预约时候
+                    li = $(" <li><label>" +
+                        "<input type='checkbox' name='detailName' value='" + dataCourse[i].detailId + "'>" + dataCourse[i].courseName + "(" + dateString(dataCourse[i].courseDate) + " " + dataCourse[i].courseBegin + "-" + dataCourse[i].courseEnd + ")" + dataCourse[i].extend1 +
+                        "</label></li>");
+                } else {
+                    li = $("<li><label>" +
+                        "<input disabled type='checkbox' name='detailName' value='" + dataCourse[i].detailId + "'>" + dataCourse[i].courseName + "(" + dateString(dataCourse[i].courseDate) + " " + dataCourse[i].courseBegin + "-" + dataCourse[i].courseEnd + ")" + dataCourse[i].extend1 +
+                        "</label></li>");
+                }
+
+                $("#detailList").append(li);
+            }
+            //渲染课程表
+            for (var i = 0; i < data.length; i++) {
+                var action = false;
+                for (var j = 0; j < dataCourse.length; j++) {
+                    if (dataCourse[j].courseId == data[i].courseid) {
+                        action = true;
+                        break;
+                    }
+                }
+                if (action) {
+                    continue;
+                }
+                li = $(" <li><label>" +
+                    "<input type='checkbox' name='courseTime' value='" + data[i].courseid + "'>" + data[i].coursename + "(" + timerString(data[i].coursebegin) + "-" + timerString(data[i].courseend) + ")" +
+                    "</label></li>");
+                $("#courseList").append(li);
+            }
+
+        }
+
+    }
+
+
+</script>
+</body>
+
+</html>

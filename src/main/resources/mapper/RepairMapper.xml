@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.singulee.carschool.pojo.RepairMapper">
+    <resultMap id="BaseResultMap" type="com.singulee.carschool.pojo.Repair">
+        <id column="repairId" jdbcType="INTEGER" property="repairid"/>
+        <result column="cartId" jdbcType="INTEGER" property="cartid"/>
+        <result column="repairTime" jdbcType="TIMESTAMP" property="repairtime"/>
+        <result column="comebackTime" jdbcType="TIMESTAMP" property="comebacktime"/>
+        <result column="teacherId" jdbcType="INTEGER" property="teacherid"/>
+        <result column="cause" jdbcType="VARCHAR" property="cause"/>
+        <result column="extend1" jdbcType="VARCHAR" property="extend1"/>
+        <result column="extend2" jdbcType="VARCHAR" property="extend2"/>
+    </resultMap>
+    <!--查看维修数-->
+    <select id="getHistoryCount" parameterType="map" resultType="java.lang.Integer">
+        select count(r.repairId) from cart c,repair r,teacher t
+        where t.teaId=r.teacherId and r.cartId =c.carId
+        <if test="teaId!=null and teaId!=''">
+            and r.teacherId=#{teaId}
+        </if>
+        <if test="teaName!=null and teaName!=''">
+            and t.teaName like concat('%',#{teaName},'%')
+        </if>
+        <if test="carNumber!=null and carNumber!=''">
+            and c.carNumber like concat('%',#{carNumber},'%')
+        </if>
+        <if test="date!=null and date!=''">
+            and r.repairTime like concat('%',#{date},'%')
+        </if>
+        <if test="staute!=null and staute!=''">
+            and r.extend1 =#{staute}
+        </if>
+    </select>
+    <select id="getHistory" parameterType="map" resultType="java.util.Map">
+        select c.carId,carNumber,
+        r.repairTime,r.repairId,r.cause,r.comebackTime,r.extend1,r.extend2,
+        t.teaName,t.teaId,t.teaPhone
+        from cart c,repair r,teacher t
+        where t.teaId=r.teacherId and r.cartId =c.carId
+        <if test="teaId!=null and teaId!=''">
+            and r.teacherId=#{teaId}
+        </if>
+        <if test="teaName!=null and teaName!=''">
+            and t.teaName like concat('%',#{teaName},'%')
+        </if>
+        <if test="carNumber!=null and carNumber!=''">
+            and c.carNumber like concat('%',#{carNumber},'%')
+        </if>
+        <if test="date!=null and date!=''">
+            and r.repairTime like concat('%',#{date},'%')
+        </if>
+        <if test="staute!=null and staute!=''">
+            and r.extend1 =#{staute}
+        </if>
+        order by repairTime asc
+        limit #{pageStart},#{pageEnd}
+    </select>
+    <!--获得当前车辆-->
+    <select id="getlocalCart" resultType="java.util.Map" parameterType="java.util.Map">
+        select c.carId, carNumber
+        from relationship r,
+             cart c
+        where c.carId = r.cartId
+          and r.endTime is null
+          and r.teacherId = #{teaId}
+    </select>
+    <!--获得空闲车-->
+    <select id="getNullCar" resultType="com.singulee.carschool.pojo.Cart" parameterType="java.util.Map">
+        select *
+        from cart
+        where staute = '备用'
+        and carDriverClass = #{carDriverClass}
+    </select>
+    <select id="getDetail" parameterType="java.util.Map" resultType="java.util.Map">
+        select c.*,
+               d.*
+        from course c,
+             detail d,
+             relationship r
+        where c.courseId = d.courseId
+          and r.relationshipId = d.relationshipId
+          and r.teacherId = #{teacherId}
+          and r.endTime is null
+        group by d.detailId
+    </select>
+
+
+    <sql id="Base_Column_List">
+
+        repairId
+        , cartId, repairTime, comebackTime, teacherId, cause, extend1, extend2
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+
+        select
+        <include refid="Base_Column_List"/>
+        from repair
+        where repairId = #{repairid,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+
+        delete
+        from repair
+        where repairId = #{repairid,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.singulee.carschool.pojo.Repair">
+
+        insert into repair (repairId, cartId, repairTime,
+                            comebackTime, teacherId, cause,
+                            extend1, extend2)
+        values (#{repairid,jdbcType=INTEGER}, #{cartid,jdbcType=INTEGER}, #{repairtime,jdbcType=TIMESTAMP},
+                #{comebacktime,jdbcType=TIMESTAMP}, #{teacherid,jdbcType=INTEGER}, #{cause,jdbcType=VARCHAR},
+                #{extend1,jdbcType=VARCHAR}, #{extend2,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.singulee.carschool.pojo.Repair">
+
+        insert into repair
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="repairid != null">
+                repairId,
+            </if>
+            <if test="cartid != null">
+                cartId,
+            </if>
+            <if test="repairtime != null">
+                repairTime,
+            </if>
+            <if test="comebacktime != null">
+                comebackTime,
+            </if>
+            <if test="teacherid != null">
+                teacherId,
+            </if>
+            <if test="cause != null">
+                cause,
+            </if>
+            <if test="extend1 != null">
+                extend1,
+            </if>
+            <if test="extend2 != null">
+                extend2,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="repairid != null">
+                #{repairid,jdbcType=INTEGER},
+            </if>
+            <if test="cartid != null">
+                #{cartid,jdbcType=INTEGER},
+            </if>
+            <if test="repairtime != null">
+                #{repairtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="comebacktime != null">
+                #{comebacktime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teacherid != null">
+                #{teacherid,jdbcType=INTEGER},
+            </if>
+            <if test="cause != null">
+                #{cause,jdbcType=VARCHAR},
+            </if>
+            <if test="extend1 != null">
+                #{extend1,jdbcType=VARCHAR},
+            </if>
+            <if test="extend2 != null">
+                #{extend2,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.singulee.carschool.pojo.Repair">
+        <!--
+          WARNING - @mbg.generated
+          This element is automatically generated by MyBatis Generator, do not modify.
+        -->
+        update repair
+        <set>
+            <if test="cartid != null">
+                cartId = #{cartid,jdbcType=INTEGER},
+            </if>
+            <if test="repairtime != null">
+                repairTime = #{repairtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="comebacktime != null">
+                comebackTime = #{comebacktime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teacherid != null">
+                teacherId = #{teacherid,jdbcType=INTEGER},
+            </if>
+            <if test="cause != null">
+                cause = #{cause,jdbcType=VARCHAR},
+            </if>
+            <if test="extend1 != null">
+                extend1 = #{extend1,jdbcType=VARCHAR},
+            </if>
+            <if test="extend2 != null">
+                extend2 = #{extend2,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where repairId = #{repairid,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.singulee.carschool.pojo.Repair">
+        <!--
+          WARNING - @mbg.generated
+          This element is automatically generated by MyBatis Generator, do not modify.
+        -->
+        update repair
+        set cartId = #{cartid,jdbcType=INTEGER},
+        repairTime = #{repairtime,jdbcType=TIMESTAMP},
+        comebackTime = #{comebacktime,jdbcType=TIMESTAMP},
+        teacherId = #{teacherid,jdbcType=INTEGER},
+        cause = #{cause,jdbcType=VARCHAR},
+        extend1 = #{extend1,jdbcType=VARCHAR},
+        extend2 = #{extend2,jdbcType=VARCHAR}
+        where repairId = #{repairid,jdbcType=INTEGER}
+    </update>
+</mapper>

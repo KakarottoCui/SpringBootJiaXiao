@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.singulee.carschool.pojo.DriverMapper">
+  <!--<resultMap id="BaseResultMap" type="com.singulee.carschool.pojo.Driver">-->
+
+    <!--<id column="driverId" jdbcType="INTEGER" property="driverid" />-->
+    <!--<result column="driverDescription" jdbcType="VARCHAR" property="driverdescription" />-->
+    <!--<result column="extend1" jdbcType="VARCHAR" property="extend1" />-->
+  <!--</resultMap>-->
+  <select id="selectDriverList"  resultType="com.singulee.carschool.pojo.Driver">
+      select * from driver
+  </select>
+</mapper>

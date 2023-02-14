@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>我的预约</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-fileupload.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .list-group a{
+            background-color: #393d49;
+            border: 0px;
+            color: white;
+
+        }
+        .list-group a:hover{
+            background-color: #12967c;
+            border: 0px;
+            color: white;
+
+        }
+
+    </style>
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="">
+            <div class="layui-logo">驾校预约管理系统</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img id="img" src="../img/mmexport1508332669479.jpg" class="layui-nav-img"><span id="usernameheader">xs-shuai </span></a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="userInfo.html">个人中心</a>
+                    </dd>
+                    <dd>
+                        <a href="/login/logout">注销登录</a>
+                    </dd>
+
+                </dl>
+            </li>
+
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <div class="list-group">
+                <a href="index.html" class="list-group-item ">首页</a>
+                <a href="coursePlan.html" class="list-group-item">预约练车</a>
+                <a href="myPaln.html" class="list-group-item active">我的预约</a>
+                <a href="courseHistory.html" class="list-group-item">练车记录</a>
+                <a href="userInfo.html" class="list-group-item">个人中心</a>
+            </div>
+        </div>
+    </div>
+    <!--添加课程 莫态框-->
+    <!--表格查询 日期 类型 当前日期之前  日期输入框为空时-->
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <p class="h3">我的预约</p>
+        <div class="col-md-12" style="margin-top: 15px">
+            <form class="form-inline">
+                <div class="form-group col-md-3">
+                    <label class="sr-only bg-success">时间</label>
+                    <div class="col-md-10  layui-input-inline">
+                        <input type="text" class="layui-input" id="courseDate">
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>课程类型</label>
+                    <select class="form-control" id="courseType">
+                        <option value="">不限</option>
+                        <option value="科目二基础">科目二基础</option>
+                        <option value="科目二">科目二</option>
+                        <option value="科目三">科目三</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>预约状态</label>
+                    <select class="form-control" id="stautes">
+                        <option value="0">已预约</option>
+                        <option value="">不限</option>
+                        <option value="1">取消</option>
+                    </select>
+                </div>
+
+            </form>
+            <input type="button" id="search" class="btn  btn-success" value="查询">
+        </div>
+        <div class="col-md-12" style="margin-top: 5px">
+            <div class="">
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>教练</th>
+                        <th>车辆</th>
+                        <th>日期</th>
+                        <th>时间段</th>
+                        <th>课程类型</th>
+                        <th>教练电话</th>
+                        <th>预约时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table">
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="layui-footer">
+        © 2022 <a href="#">singulee.com</a>
+    </div>
+
+</div>
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-fileupload.js"></script>
+<script src="../layui/layui.all.js"></script>
+<script src="../js/myjs.js"></script>
+<script>
+    //初始化时间控件
+
+    $(function () {
+        shouimg();
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#courseDate',
+                value: new Date()
+            });
+        })
+        getMyorder();
+
+        $("#search").click(getMyorder)
+
+
+    })
+    function getMyorder() {
+       var json = {
+           courseClass: $("#courseType").val(), courseDate: $("#courseDate").val(), stautes: $("#stautes").val()
+       }
+        $.ajax({
+            url: "/order/getMyOrder",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    showtr(response.data)
+                }
+                else {
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+
+
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+
+    }
+    function showtr(data) {
+        $("#table").empty();
+        var tr;
+        for(var i=0;i<data.length;i++){
+            tr=$("<tr><td>"+(i+1)+"</td><td>"+data[i].teaName+"</td><td>"+data[i].carNumber+"</td>" +
+                "<td>"+dateString(data[i].courseDate)+"</td><td>"+data[i].courseBegin+"-"+data[i].courseEnd+"</td><td>"+data[i].extend1+"</td><td>"+data[i].teaPhone+"</td>" +
+                "<td>"+datetimeStr(data[i].ordertime)+"</td><td><input value='"+data[i].ordId+"' type='hidden'><a onclick='canel(this)'>取消预约</a></td></tr>")
+            $("#table").append(tr);
+        }
+
+    }
+
+    function canel(obj){
+        var  json={ ordid:$(obj).parent().find('input').eq(0).val()}
+        $.ajax({
+            url: "/order/canelOrder",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    layer.msg('取消预约', {
+                        time: 1000
+
+                    })
+                }
+                else {
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+                getMyorder();
+
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+    }
+
+
+
+
+
+
+
+
+</script>
+</body>
+
+</html>

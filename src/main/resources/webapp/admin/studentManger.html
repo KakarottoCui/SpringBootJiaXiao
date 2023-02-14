@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>学员管理</title>
+
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-fileupload.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .list-group a {
+            background-color: #393d49;
+            border: 0px;
+            color: white;
+
+        }
+
+        .list-group a:hover {
+            background-color: #12967c;
+            border: 0px;
+            color: white;
+
+        }
+
+    </style>
+
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="">
+            <div class="layui-logo">驾校预约管理系统</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+
+        <div class="layui-nav">
+            <!-- Single button -->
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img id="img" src="../img/mmexport1508332669479.jpg" class="layui-nav-img"><span
+                            id="usernameheader">singulee </span></a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="userInfo.html">个人中心</a>
+                        </dd>
+                        <dd>
+                            <a href="/login/logout">注销登录</a>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <div class="list-group">
+                <a href="index.html" class="list-group-item ">首页</a>
+                <a href="studentManger.html" class="list-group-item active">学员管理</a>
+                <a href="teacherManger.html" class="list-group-item">教练管理</a>
+                <a href="cartManger.html" class="list-group-item ">车辆管理</a>
+                <a href="relationshipManager.html" class="list-group-item">关系管理</a>
+                <a href="repairManger.html" class="list-group-item">车辆维修模块</a>
+                <a href="userInfo.html" class="list-group-item">个人中心</a>
+            </div>
+        </div>
+    </div>
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <p class="h3">学员管理</p>
+        <div class="col-md-12">
+            <div>
+                <button type="button" class="btn btn-info" id="addbutton" data-toggle="modal" data-target="#addmodal"
+                        aria-label="Left Align">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true">添加</span>
+                </button>
+
+            </div>
+        </div>
+        <div class="col-md-12" style="margin-top: 15px">
+
+            <form class="form-inline">
+                <div class="form-group col-md-3">
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" placeholder="学员姓名" id="stuNameTitle">
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>驾照类型</label>
+                    <select class="form-control" id="driverTitle">
+                        <option value="">不限</option>
+
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>学习阶段</label>
+                    <select class="form-control" id="studyStute">
+                        <option value="">不限</option>
+                        <option value="科目二基础">科目二基础</option>
+                        <option value="科目二">科目二</option>
+                        <option value="科目三">科目三</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label>毕业状态</label>
+                    <select class="form-control" id="stauteTitle">
+                        <option value="">不限</option>
+                        <option value="未毕业" selected>未毕业</option>
+                        <option value="已毕业">已毕业</option>
+                    </select>
+                </div>
+                <button type="button" id="serach" class="btn  btn-success">查询</button>
+            </form>
+        </div>
+        <div class="col-md-12" style="margin-top: 5px">
+            <div class="">
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>姓名</th>
+                        <th>性别</th>
+                        <th>电话</th>
+                        <th>学习状态</th>
+                        <th>驾照类型</th>
+                        <th>教练</th>
+                        <th>报名日期</th>
+                        <th>毕业时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="layui-footer">
+        © 2022 <a href="#">singulee.com</a>
+    </div>
+</div>
+<!--模态框-->
+<div class="modal" id="addmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    添加
+                </h4>
+            </div>
+            <div class="modal-body">
+                <!--添加框-->
+                <div class="form-horizontal">
+                    <!--隐藏表单域-->
+                    <input type="hidden" class="form-control" id="stuId">
+                    <div class="form-group">
+
+                        <label class="col-sm-3 control-label">
+                            姓名</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="stuName" placeholder="姓名">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            电话</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="stuPhone" placeholder="电话">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            密码</label>
+                        <div class="col-sm-8">
+                            <input type="password" value="123456" class="form-control" id="stuPassword"
+                                   placeholder="密码">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            性别</label>
+                        <div class="col-sm-8">
+                            <div>
+                                <input type="radio" name="sex" value="0" checked> 男
+                                <input type="radio" name="sex" value="1"> 女
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            学习状态</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="stuStust">
+                                <option value="科目二基础" selected>科目二基础</option>
+                                <option value="科目二">科目二</option>
+                                <option value="科目三">科目三</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            驾驶证类型</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="driverClass">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            入学日期</label>
+                        <div class="col-sm-8">
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="inDate" placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            教练</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="teaId">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            生日</label>
+                        <div class="col-sm-8">
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="birthDate" placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            毕业日期</label>
+                        <div class="col-sm-8">
+                            <div class="layui-input-inline">
+                                <input type="text" disabled class="layui-input" id="outDate" placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            照片</label>
+                        <div class="col-sm-8">
+                            <!--照片上传预览-->
+                            <div class="col-sm-7">
+                                <form id="uploadForm" enctype="multipart/form-data">
+                                    <img src="" id="showImg" style="width: 120px; height: 80px;"/>
+                                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                                        <div class="fileupload-new thumbnail" style="width: 120px; height: 80px;">
+                                            <img src="" id="newImg" alt=""/></div>
+                                        <div class="fileupload-preview fileupload-exists thumbnail"
+                                             style="max-width: 120px; max-height: 80px; line-height: 20px;"></div>
+                                        <div>
+                                        <span class="btn btn-file btn-primary"><span
+                                                class="fileupload-new">选择图片</span>
+                                        <span id="sucessbtn1"
+                                              class="fileupload-exists">修改</span>
+                                        <input type="file" name="file"/>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+                <button id="submit" type="button" class="btn btn-primary">
+                    提交更改
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-fileupload.js"></script>
+<script src="../layui/layui.all.js"></script>
+<script src="../js/myjs.js"></script>
+<script src="../js/md5.js"></script>
+<script>
+    //图片路径
+    var path;
+    var password;
+    $(function () {
+        shouimg();
+        getDriverClass();//渲染驾照类型下拉框
+        getTeacher();
+
+        getStudentList();
+        $("#driverClass").change(getTeacher);
+
+
+        $("#submit").click(student);
+        $("#addbutton").click(function () {
+            $("#stuId").val("");
+            $("#stuName").val("")
+            $("#stuPhone").val("");
+            $("#inDate").val();
+            $("#birthDate").val();
+        })
+        $("#serach").click(function () {
+            getStudentList();
+        })
+    })
+
+    //查询学员列表
+    function getStudentList() {
+        var name = $("#stuNameTitle").val();//查找名字
+        var driverclass = $("#driverTitle").val();//驾照状态
+        var studyStute = $("#studyStute").val();//学习阶段
+        var finsh = $("#stauteTitle").val();//学习状态 毕业是否
+        var json = {name: name, driverclass: driverclass, studentStute: studyStute, finshStau: finsh}
+        console.log(json)
+        $.ajax({
+            url: "/student/getStuList",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    //渲染数据
+                    addtr(response.data);
+                } else {
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+
+    }
+
+    function getDetail(obj) {
+        var studentId = $(obj).parent().find('input').eq(0).val();
+        var json = {stuid: studentId};
+        $.ajax({
+            url: "/student/getStudent",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    showDetail(response.data);
+                }
+
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+
+        })
+    }
+
+    //显示详情
+    function showDetail(data) {
+        $("#stuId").val(data.stuid);
+        $("#stuName").val(data.stuname)
+        $("#stuPhone").val(data.stuphone);
+        allpassword = data.stupwd;
+        $("#stuPassword").val(data.stupwd);
+        $("#inDate").val(dateString(data.stustartdate));
+        $("#birthDate").val(dateString(data.stubirth));
+        $("#showImg").attr("src", "../img/" + data.stuimg);
+        if (data.stuenddate != null) {
+            $("#submit").hide();
+        }
+        $("#outDate").val(data.stuenddate == null ? "" : dateString(data.stuenddate));
+        var optiondriver = $("#driverClass option")
+        for (var i = 0; i < optiondriver.length; i++) {
+            if (optiondriver.get(i).value == data.stusta) {
+                optiondriver.get(i).selected = true;
+                break;
+            }
+        }
+        //教练渲染
+        var optionteaId = $("#teaId option")
+        for (var i = 0; i < optionteaId.length; i++) {
+            if (optionteaId.get(i).value == data.teaid) {
+                optionteaId.get(i).selected = true;
+                break;
+            }
+        }
+        //学习状态
+        var optionSta = $("#stuStust option")
+        for (var i = 0; i < optionSta.length; i++) {
+            if (optionSta.get(i).value == data.stustust) {
+                optionSta.get(i).selected = true;
+                break;
+            }
+        }
+        //驾驶类型
+
+        var sex = $("input[name='sex']");
+        for (var i = 0; i < sex.length; i++) {
+            if (sex.get(i).value == data.stusex) {
+                sex.get(i).checked = true;
+                break;
+            }
+        }
+
+
+    }
+
+
+    //渲染tr
+    function addtr(data) {
+        $("#table").empty()
+        var tr;
+        for (var i = 0; i < data.length; i++) {
+
+            tr = $("<tr><td>" + (i + 1) + "</td><td>" + data[i].stuName + "</td>" +
+                "<td>" + getSex(data[i].stuSex) + "</td><td>" + data[i].stuPhone + "</td>" +
+                "<td>" + data[i].stuStust + "</td>" +
+                "<td>" + data[i].driverDescription + "</td>" +
+                "<td>" + data[i].teaName + "</td>" +
+                "<td>" + dateString(data[i].stuStartDate) + "</td>" +
+                "<td>" + dateString(data[i].stuEndDate) + "</td>" +
+                "<td><input hidden value='" + data[i].stuId + "'><a data-toggle='modal' data-target='#addmodal' onclick='getDetail(this)'>详情</a></td></tr>'");
+            $("#table").append(tr);
+        }
+
+    }
+
+    //学员修改
+    function updateStudent(json) {
+        $.ajax({
+            url: "/student/updateStudent",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    layer.msg("修改成功", {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                    getStudentList();
+                } else {
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+                $("#addmodal").modal('hide');
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+
+    // 信息管理 添加或修改
+    function student() {
+        var stuid = $("#stuId").val().trim();
+        var stuname = $("#stuName").val().trim();
+        var stuphone = $("#stuPhone").val().trim();
+        var stupwd = $("#stuPassword").val().trim();
+        if (stupwd != password) {
+            stupwd = hex_md5(stupwd);
+        }
+        var stustust = $("#stuStust").val().trim();
+        var stusta = $("#driverClass").val().trim();
+        var stustartdate = $("#inDate").val().trim();
+        var teaid = $("#teaId").val().trim();
+        var stubirth = $("#birthDate").val();
+        var stusex = $("input[name='sex']:checked").val();
+        var stuimg;
+        //添加时
+        if (stuid.length == 0) {
+            $("#showImg").hide();
+            fileupload()
+        } else {
+            //修改时
+            $("#showImg").show();
+            var src = $("#showImg").attr('src');
+            // 没有修改
+            path = "";
+            fileupload()
+            if (path.length == 0) path = src.substr(src.lastIndexOf("/") + 1);
+        }
+        stuimg = path;
+
+        if (stuname.length == 0 || stupwd == 0 || stuphone == 0) {
+            layer.msg('请填写完整信息', {
+                time: 1000,
+                btn: ['好的']
+            })
+            return;
+        }
+        var json = {
+            stuid: stuid,
+            stuname: stuname,
+            stuphone: stuphone,
+            stupwd: stupwd,
+            stustust: stustust,
+            stusta: stusta,
+            stustartdate: stustartdate,
+            teaid: teaid,
+            stubirth: stubirth,
+            stusex: stusex,
+            stuimg: stuimg
+        }
+        allpassword = "";
+        if ($("#stuId").val() == null || $("#stuId").val().trim().length == 0) {
+            addStudent(json);
+        } else {
+
+            updateStudent(json);
+        }
+    }
+
+    //学员添加
+    function addStudent(json) {
+        $.ajax({
+            url: "/student/addStudent",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    layer.msg('添加成功', {
+                        time: 1000,
+                    })
+                } else {
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+                $("#addmodal").modal('hide');
+
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+
+    //文件上传
+    function fileupload() {
+        var formData = new FormData($("#uploadForm")[0]);
+        $.ajax({
+            url: '/login/upload',
+            type: 'post',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (respone) {
+                if (respone.code == 200) {
+                    path = respone.data;
+                }
+            },
+            error: function (respone) {
+                return null;
+            }
+        });
+    }
+
+    //获得教练列表  教练列需要二次查询   同时在教练离职 和修改教学类型时 不能有为毕业的学生
+    function getTeacher() {
+        var json = {driverclassId: $("#driverClass").val()}
+        $.ajax({
+            url: "/teacher/getTeacherList",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    addteacherSelect(response.data);
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+    }
+
+    //获得驾照类型
+    function getDriverClass() {
+        $.ajax({
+            url: "/driver/getDriverList",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            success: function (response) {
+                if (response.code == 200) {
+                    addDriverClassforSelect(response.data);
+                }
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+    }
+
+    //驾照类型添加下拉框
+    function addDriverClassforSelect(data) {
+        $("#driverClass").empty();
+        $("#driverTitle").empty();
+        var option;
+        var optiontile;
+        option = "<option value=\"\">不限</option>";
+        $("#driverTitle").append(option);
+        for (var i = 0; i < data.length; i++) {
+            option = $("<option value='" + data[i].driverid + "'>" + data[i].driverdescription + "</option>")
+            optiontile = $("<option value='" + data[i].driverid + "'>" + data[i].driverdescription + "</option>")
+            $("#driverClass").append(option);
+            $("#driverTitle").append(optiontile);
+        }
+    }
+
+    //渲染教师下拉框
+    function addteacherSelect(data) {
+        $("#teaId").empty();
+        var option;
+        for (var i = 0; i < data.length; i++) {
+            option = $("<option value='" + data[i].teaId + "'>" + data[i].teaName + "</option>")
+            $("#teaId").append(option);
+        }
+    }
+
+
+    //日期控件初始化函数
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#inDate'
+        });
+
+        laydate.render({
+            elem: '#birthDate'
+        });
+
+        laydate.render({
+            elem: '#outDate'
+        });
+    })
+
+</script>
+</html>

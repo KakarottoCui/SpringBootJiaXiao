@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>练车记录</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-fileupload.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .list-group a {
+            background-color: #393d49;
+            border: 0px;
+            color: white;
+
+        }
+
+        .list-group a:hover {
+            background-color: #12967c;
+            border: 0px;
+            color: white;
+
+        }
+    </style>
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="">
+            <div class="layui-logo">驾校预约管理系统</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img id="img" src="../img/mmexport1508332669479.jpg" class="layui-nav-img"><span
+                        id="usernameheader">xs-shuai </span></a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="">个人中心</a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:;" tab_url="">修改密码</a>
+                    </dd>
+                    <dd>
+                        <a href="">注销登录</a>
+                    </dd>
+
+                </dl>
+            </li>
+
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <div class="list-group">
+                <a href="index.html" class="list-group-item ">首页</a>
+                <a href="coursePlan.html" class="list-group-item">预约练车</a>
+                <a href="myPaln.html" class="list-group-item ">我的预约</a>
+                <a href="courseHistory.html" class="list-group-item active">练车记录</a>
+                <a href="userInfo.html" class="list-group-item">个人中心</a>
+            </div>
+        </div>
+    </div>
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <p class="h3">练车记录</p>
+        <div class="col-md-12" style="margin-top: 15px">
+            <form class="form-inline">
+                <div class="form-group col-md-3">
+                    <div class="col-md-10  layui-input-inline">
+                        <input type="text" class="layui-input" id="courseDate" placeholder="课程时间">
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>课程类型</label>
+                    <select class="form-control" id="courseType">
+                        <option value="">不限</option>
+                        <option value="科目二基础">科目二基础</option>
+                        <option value="科目二">科目二</option>
+                        <option value="科目三">科目三</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label>预约状态</label>
+                    <select class="form-control" id="stautes">
+                        <option value="0">已预约</option>
+                        <option value="">不限</option>
+                        <option value="1">取消</option>
+                    </select>
+                </div>
+            </form>
+            <div class="form-group col-md-3">
+                <input type="button" value="查询" id="search">
+            </div>
+
+
+        </div>
+        <div class="col-md-12" style="margin-top: 5px">
+            <div class="">
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>教练</th>
+                        <th>车辆</th>
+                        <th>日期</th>
+                        <th>时间段</th>
+                        <th>课程类型</th>
+                        <th>评分</th>
+                        <th>日志</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table">
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="layui-footer">
+        © 2022 <a href="#">singulee.com</a>
+    </div>
+</div>
+
+<div class="modal" id="addmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    课程管理
+                </h4>
+            </div>
+            <div class="modal-body">
+                <!--页面设计-->
+                <div class="col-md-12">
+                    <form>
+                        <div class="col-md-12">
+                            <div class="col-md-6 form-inline">
+                                <div class="col-md-4">车牌:</div>
+                                <div class="col-md-8" id="carNumber"></div>
+                            </div>
+                            <div class="col-md-6 form-inline">
+                                <div class="col-md-4">教练姓名:</div>
+                                <div class="col-md-8" id="teaName"></div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="col-md-12">
+                            <div class="col-md-6 form-inline">
+                                <div class="col-md-4">时间:</div>
+                                <div class="col-md-8" id="courseTime"></div>
+                            </div>
+                            <div class="col-md-6 form-inline">
+                                <div class="col-md-4">电话:</div>
+                                <div class="col-md-8" id="teaPhone"></div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="col-md-12">
+                            <div class="col-md-6 form-inline">
+                                <div class="col-md-4">课程类型:</div>
+                                <div class="col-md-8" id="courseClass"></div>
+                            </div>
+                            <div class="col-md-6 form-inline">
+                                <div class="col-md-4">预定时间:</div>
+                                <div class="col-md-8" id="orderTime"></div>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="layui-form-item col-md-12">
+                            <div class="col-md-6">
+                                <label class="layui-form-label">评分</label>
+                                <div class="layui-input-block">
+                                    <select class="form-control" id="coursegrande">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6"><input id="orderId" type="hidden"></div>
+                        </div>
+                        <div class="layui-form-item  col-md-12 layui-form-text">
+                            <label class="layui-form-label">日志</label>
+                            <div class="layui-input-block">
+                                <textarea placeholder="日志" class="layui-textarea" id="log"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item col-md-12 layui-form-text" id="logDatebox">
+                            <label class="layui-form-label">提交日期:</label>
+                            <p id="logdate"></p>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button id="save" type="button" class="btn btn-primary">
+                    发布
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-fileupload.js"></script>
+<script src="../layui/layui.all.js"></script>
+<script src="../js/myjs.js"></script>
+<script>
+    $(function () {
+        shouimg();
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#courseDate',
+                value: new Date(new Date().getTime() - (7 * 1000 * 60 * 60 * 24))
+                , isInitValue: true
+            });
+        })
+
+        $("#search").click(getMyorder)
+        getMyorder();
+        saveLog();
+        $("#logDatebox").hide();
+
+    })
+
+    //查询我的练车记录
+    function getMyorder() {
+        var json = {
+            courseClass: $("#courseType").val(),
+            courseDate: $("#courseDate").val(),
+            stautes: $("#stautes").val()
+        }
+        $.ajax({
+            url: "/order/getMyOrder",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    showtr(response.data)
+                } else {
+                    $("#table").empty();
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+
+
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+
+    }
+
+    //显示
+    function showtr(data) {
+        $("#table").empty();
+        var tr;
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].grade != null) {
+                tr = $("<tr><td>" + (i + 1) + "</td><td>" + data[i].teaName + "</td><td>" + data[i].carNumber + "</td>" +
+                    "<td>" + dateString(data[i].courseDate) + "</td><td>" + data[i].courseBegin + "-" + data[i].courseEnd + "</td><td>" + data[i].extend1 + "</td><td>" + data[i].grade + "</td>" +
+                    "<td>" + data[i].log.substring(0, 10) + "..." + "</td><td><input value='" + data[i].ordId + "' type='hidden'><a data-toggle='modal' data-target='#addmodal' onclick='showOrderInfo(this)'>查看详情</a></td></tr>");
+            } else {
+                tr = $("<tr><td>" + (i + 1) + "</td><td>" + data[i].teaName + "</td><td>" + data[i].carNumber + "</td>" +
+                    "<td>" + dateString(data[i].courseDate) + "</td><td>" + data[i].courseBegin + "-" + data[i].courseEnd + "</td><td>" + data[i].extend1 + "</td><td>未评分</td>" +
+                    "<td>---</td><td><input value='" + data[i].ordId + "' type='hidden'><a data-toggle='modal' data-target='#addmodal' onclick='showOrderInfo(this)'>写日志</a></td></tr>")
+            }
+            $("#table").append(tr);
+        }
+
+    }
+
+
+    //渲染到莫态框
+    function showOrderInfo(obj) {
+        var json = {orderId: $(obj).parent().find('input').eq(0).val()}
+        $.ajax({
+            url: "/order/getOrderInfo",
+            type: "post",
+            cache: false,
+            contentType: "application/json",
+            datatype: "json",
+            data: JSON.stringify(json),
+            success: function (response) {
+                if (response.code == 200) {
+                    $("#carNumber").text(response.data[0].carNumber)
+                    $("#teaName").text(response.data[0].teaName)
+                    $("#teaPhone").text(response.data[0].teaPhone)
+                    $("#courseTime").text(dateString(response.data[0].courseDate) + " (" + response.data[0].courseBegin + "-" + response.data[0].courseEnd + ")")
+                    $("#courseClass").text(response.data[0].extend1);
+                    $("#orderTime").text(datetimeStr(response.data[0].ordertime));
+                    $("#orderId").val(response.data[0].ordId);
+                    if (typeof (response.data[0].grade) != 'undefined') {
+                        var option = $("#grade option")
+                        for (var i = 0; i < option.length; i++) {
+                            if (option.get(i).value == data.teaid) {
+                                option.get(i).selected = true;
+                                break;
+                            }
+                        }
+                        $("#log").text(response.data[0].log)
+
+                        $("#logDatebox").show();
+                        $("#logdate").text(datetimeStr(response.data[0].logDate))
+                        $("#save").hide();
+
+                    } else {
+                        $("#save").show();
+                    }
+                } else {
+                    $("#table").empty();
+                    layer.msg(response.msg, {
+                        time: 1000,
+                        btn: ['好的']
+                    })
+                }
+
+
+            }
+            ,
+            error: function (response) {
+                console.log("出错返回: " + response);
+                console.log("出错数据: " + JSON.stringify(response));
+            }
+        });
+
+    }
+
+    // 提交日志
+    function saveLog() {
+
+
+        $("#save").click(function () {
+            var json = {orderId: $("#orderId").val(), log: $("#log").val().trim(), grade: $("#coursegrande").val()};
+            console.log(json);
+            $.ajax({
+                url: "/order/saveLog",
+                type: "post",
+                cache: false,
+                contentType: "application/json",
+                datatype: "json",
+                data: JSON.stringify(json),
+                success: function (response) {
+                    if (response.code == 200) {
+                        layer.msg('填写日志成功', {
+                            time: 1000,
+                            btn: ['好的']
+                        })
+                    }
+                    $("#addmodal").modal('hide');
+                    getMyorder();
+                }
+                ,
+                error: function (response) {
+                    console.log("出错返回: " + response);
+                    console.log("出错数据: " + JSON.stringify(response));
+                }
+            });
+        })
+
+
+    }
+
+
+</script>
+</body>
+
+</html>

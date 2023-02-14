@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>管理员首页</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-fileupload.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+
+    <style>
+        .list-group a{
+            background-color: #393d49;
+            border: 0px;
+            color: white;
+
+        }
+        .list-group a:hover{
+            background-color: #12967c;
+            border: 0px;
+            color: white;
+
+        }
+    </style>
+
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="">
+            <div class="layui-logo">驾校预约管理系统</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img id="img" src="../img/mmexport1508332669479.jpg" class="layui-nav-img"><span id="usernameheader">singulee </span></a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="userInfo.html">个人中心</a>
+                    </dd>
+                    <dd>
+                        <a href="/login/logout">注销登录</a>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <div class="list-group">
+                <a href="index.html" class="list-group-item active">首页</a>
+                <a href="studentManger.html" class="list-group-item">学员管理</a>
+                <a href="teacherManger.html" class="list-group-item">教练管理</a>
+                <a href="cartManger.html" class="list-group-item">车辆管理</a>
+                <a href="relationshipManager.html" class="list-group-item">关系管理</a>
+                <a href="repairManger.html" class="list-group-item">车辆维修模块</a>
+                <a href="userInfo.html" class="list-group-item">个人中心</a>
+            </div>
+        </div>
+    </div>
+    <div class="layui-body">
+        <div align="center" style="margin-top: 20px"><h1>欢迎使用驾校预约管理系统</h1></div>
+        <!-- 内容主体区域 -->
+        <div align="center" style="margin-top: 20px" >
+        <a type="button" href="studentManger.html" class="btn btn-primary btn-lg">学员管理</a>
+        <a type="button" href="teacherManger.html" class="btn btn-primary btn-lg">教练管理</a>
+        <a type="button" href="cartManger.html" class="btn btn-primary btn-lg">车辆管理</a>
+        <a type="button" href="relationshipManager.html"  class="btn btn-primary btn-lg">关系管理</a>
+        <a type="button" href="repairManger.html" class="btn btn-primary btn-lg">车辆维修模块</a>
+        </div>
+    </div>
+    <div class="layui-footer">
+        © 2022 <a href="#">singulee.com</a>
+    </div>
+</div>
+
+
+</body>
+<script src="../js/jquery-3.3.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-fileupload.js"></script>
+<script src="../layui/layui.all.js"></script>
+<script src="../js/myjs.js"></script>
+<script>
+    $(function () {
+        shouimg();
+    })
+</script>
+</html>
