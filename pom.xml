@@ -1,26 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-    <groupId>com.singulee</groupId>
-    <artifactId>car-school</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>car-school</name>
-    <description>carschool</description>
-    <packaging>war</packaging>
-    <properties>
-        <java.version>1.8</java.version>
-        <mapper.spring-boot.starter.version>2.0.4</mapper.spring-boot.starter.version>
-        <mybatis-spring-boot-starter.version>1.3.2</mybatis-spring-boot-starter.version>
-    </properties>
-    <dependencies>
-        <dependency>
+
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>

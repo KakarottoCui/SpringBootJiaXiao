@@ -11,8 +11,5 @@ public class MyAppConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         Interceptor loginInterceptor = new Interceptor();
 
-        String[] path = {"/**"};
-        String[] excludePath = {"/login.html", "/js/**", "/css/**", "/fonts/**", "/images/**", "/img/**", "/layui/**/**"};
-        registry.addInterceptor(loginInterceptor).addPathPatterns(path).excludePathPatterns(excludePath);
     }
 }

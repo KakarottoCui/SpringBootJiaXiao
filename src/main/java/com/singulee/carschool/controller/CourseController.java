@@ -8,32 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA.
- 
- * Date: 2023/02/19
- * Description:
- * Version: V1.0
- */
-@Controller
-@RequestMapping("/course")
-public class CourseController {
-    private CourseService courseService;
-    private DetailService detailService;
-
-    @Autowired
-    public CourseController(CourseService courseService, DetailService detailService
-                            ) {
-        this.courseService = courseService;
-        this.detailService=detailService;
-    }
-
-    /**
-     * 获取课程表时间
-     * @return
      */
     @RequestMapping(value = "/getCourses")
     @ResponseBody
