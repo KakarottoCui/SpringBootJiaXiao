@@ -1,7 +1,7 @@
 # SpringBootJiaXiao
 基于java SpringBoot框架的驾校预约系统设计
 
-演示视频链接：https://live.csdn.net/v/275217
+演示视频链接：https://www.bilibili.com/video/BV1n84y1p71S/
 
 实现的功能
 
